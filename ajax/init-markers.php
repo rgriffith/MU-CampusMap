@@ -4,7 +4,7 @@
 		die('Direct access to this script is forbidden');
 	}
 */
-	if ($markerData = @file_get_contents('markercache.json')) {
+	if (!$markerData = @file_get_contents('markercache2.json')) {
 		echo $markerData;
 		die();
 	} else {
@@ -88,7 +88,7 @@
 					</div></div></div>';
 				
 				// Append the new marker.
-				$markerData[$marker['id']] = $marker;
+				$markerData[$marker['name']] = $marker;
 				
 				// Record the building info for later use.
 				$buildings[$marker['name']] = array(
@@ -100,7 +100,7 @@
 				// If there were matched departments, clone the original marker (i.e. building)
 				// and loop through each found marker, updating only the name.
 				if (count($mDepartments) > 0) {
-					$tempMarker = $markerData[$marker['id']];
+					$tempMarker = $markerData[$marker['name']];
 					foreach ($mDepartments as $k => $department) {
 						$tempMarker['id'] = count($markerData);
 						$tempMarker['name'] = $department['name'];
@@ -122,15 +122,21 @@
 						unset($tempMarker['departments']);
 						$tempMarker['description'] = '';
 						
-						$markerData[$tempMarker['id']] = $tempMarker;
+						$markerData[$tempMarker['name']] = $tempMarker;
 					}
 				}
 			}		
 		}
-			
+		
+		ksort($markerData);
+		
+		// The "alphabetical" keys are only needed to sort,
+		// the following will reset them to numbers.
+		$markerData = array_values($markerData);
+		
 		// Encode, write and output the marker JSON.
 		$json = json_encode($markerData);		
-		file_put_contents('markercache.json', $json);				
+		file_put_contents('markercache2.json', $json);				
 		//echo $markerJSON;
 		
 		// Encode, write and output the building JSON.

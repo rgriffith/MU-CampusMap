@@ -4,56 +4,70 @@
 		die('Direct access to this script is forbidden');
 	}
 */
-	$search = isset($_GET['q']) ? $_GET['q'] : '';
-	$page = (isset($_GET['page']) || $_GET['page'] < 0) ? $_GET['page'] : 1;
-	$s = isset($_GET['s']) ? $_GET['s'] : 6;
+	$search = isset($_GET['q']) ? str_replace('\\','',$_GET['q']) : '';
+	
+	// Is this a greedy search?
+	// If so, we're checking only the marker name and id, for what the user entered. 
+	$greedy = (isset($_GET['greedy']) && preg_match('/^(1|true)$/i',$_GET['greedy'])) || preg_match('/^"[\w\s]*/i', $search) ? true : false;
+	
+	// We can remove the quotes from the query now that we've determined if this is a greedy search or not.
+	$search = str_replace('"','',$search);	
 	
 	$markers = json_decode(file_get_contents('markercache.json'));
 	
 	$markerData = array();
 	if (!empty($search)) {
 		foreach ($markers as $m) {
-			$foundBuilding = false;
-			$departmentMatches = array();		
-			
-			$keywords = explode(' ', $search);
-			
-			// Are there departments?
-			// Of so, we need to record them so we can search.
-			$mDepartments = array();
-			if (@$m->departments && count($m->departments) > 0) {						
-				foreach ($m->departments as $k => $d) {
-					$mDepartments[] = $d->name;
-				}
-			}
-					
 			// Make sure we're not looking at a callbox or parking lot...
 			if (preg_match('/lot|athletics/i', @$m->category) 
 				|| preg_match('/call box/i', @$m->name)
 				) {
 				continue;
 			}
+			
+			$foundBuilding = false;		
+			$departmentMatches = array();		
 					
 			// Test the name and addrsss for the entire phrase.
-			if (stripos($m->name, $search) !== false || stripos(@$m->address, $search) !== false || stripos(@$m->id, $search) !== false) {				
+			if (stripos($m->name, $search) !== false || stripos(@$m->id, $search) !== false) {				
 				$foundBuilding = true;
 			}
 			
-			// Look for any department names that contain the phrase.
-			$departmentMatches = preg_grep('/'.$search.'/i', $mDepartments);
 			
-			// If we have keywords, then loop over them.
-			if (count($keywords) > 1) {		
-				// Loop over the keyword(s).
-				// If we find a match, record it and break the loop.
-				foreach ($keywords as $v) {
-					// Does the marker's name or address contain the keyword?
-					if (stripos($m->name, $v) !== false || stripos($m->address, $v) !== false || stripos($m->id, $v) !== false) {				
-						$foundBuilding = true;
+			// If the search isn't greedy, check for the marker's address, department(s) and 
+			// search by keyword(s).			
+			if ($greedy === false) {
+				// Test the name and addrsss for the entire phrase.
+				if (stripos(@$m->address, $search) !== false) {				
+					$foundBuilding = true;
+				}
+				
+				// Are there departments to begin with?
+				// If so, we need to record them so we can search.
+				$mDepartments = array();
+				if (@$m->departments && count($m->departments) > 0) {						
+					foreach ($m->departments as $k => $d) {
+						$mDepartments[] = $d->name;
 					}
-					
-					// Does one of the marker's departments contain the keyword?
-					$departmentMatches = array_merge($departmentMatches, preg_grep('/'.$v.'/i', $mDepartments));
+				}
+			
+				// Look for any department names that contain the phrase.
+				$departmentMatches = preg_grep('/'.$search.'/i', $mDepartments);
+				
+				// If we have keywords, then loop over them.
+				$keywords = explode(' ', $search);								
+				if (count($keywords) > 1) {		
+					// Loop over the keyword(s).
+					// If we find a match, record it and break the loop.
+					foreach ($keywords as $v) {
+						// Does the marker's name or address contain the keyword?
+						if (stripos($m->name, $v) !== false || stripos($m->address, $v) !== false || stripos($m->id, $v) !== false) {				
+							$foundBuilding = true;
+						}
+						
+						// Does one of the marker's departments contain the keyword?
+						$departmentMatches = array_merge($departmentMatches, preg_grep('/'.$v.'/i', $mDepartments));
+					}
 				}
 			}
 			

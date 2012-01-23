@@ -1,8 +1,11 @@
+function getQueryString(a) {
+	return (a = location.search.match(new RegExp("[?&]" + a + "=([^&]*)(&?)", "i"))) ? a[1] : a;
+}
+
 function CampusMap(canvas) {
 	var mapObj = this,
 		map,
 		markers = [],
-		htmls = [],
 		infowindow;
 	
 	this.canvas = canvas;
@@ -12,7 +15,7 @@ function CampusMap(canvas) {
 	
 	this.layers = {
 		kml: [],
-		buildings: ['academicsLayer','administrativeLayer','dormLayer']
+		buildings: ['academicsLayer', 'administrativeLayer', 'dormLayer']
 	};
 	
 	this.search = {
@@ -34,32 +37,30 @@ function CampusMap(canvas) {
 		});
 		
 		// Load the default KML layer onto the map.
-		var kmlUrl = 'http://www.millersville.edu/directions/kml/mobile/marker-dump.kml?v='+this.kmlVersion;		
+		var kmlUrl = 'http://www.millersville.edu/directions/kml/mobile/marker-dump.kml?v=' + this.kmlVersion;		
 		this.layers.kml['baseLayer'] = new google.maps.KmlLayer(kmlUrl, {suppressInfoWindows: false, preserveViewport: true});
-		this.layers.kml['baseLayer'].setMap(map);		
+		this.layers.kml['baseLayer'].setMap(map);
 		
 		// Preload all of the markers for quicker searching and referencing.
 		// Once loaded, initialize any query variables that may be supplied.
 		$.ajax({
-			type: "GET",
-			url: "http://166.66.47.86/campusmap/ajax/markercache.json",
-			dataType: "json",
-			success: function(response){
+			type: 'GET',
+			url: 'http://166.66.47.86/campusmap/ajax/markercache.json',
+			dataType: 'json',
+			success: function(response) {
 				mapObj.markerJSON = response;
 
 				// If we have a search query, search the map...
-				var query = _getQueryString('query');				
-				
 				// If we have some deep links (i.e. building id's), parse them...
 				// Deep links may be in CSV format for multiples.
-				var deeplinksIds = _getQueryString('id');
-				
-				
+				var query = getQueryString('query'),
+					deeplinksIds = getQueryString('id');				
+
 				// For simplicity, give priority to search over deep links...
-				if (query != null) {
+				if (query !== null) {
 					query = unescape(query);
-					mapObj.searchMarkers(query.replace('+',' '));
-				} else if (deeplinksIds != null) {
+					mapObj.searchMarkers(query.replace('+', ' '));
+				} else if (deeplinksIds !== null) {
 					mapObj.deepLinkMarkers(deeplinksIds.split(','));
 				}
 			}
@@ -69,9 +70,9 @@ function CampusMap(canvas) {
 	};
 	
 	this.showKmlLayer = function(layerId, kmlOptions) {
-		// If the layer doesn't exist yet, create one.
-		if (this.layers.kml[layerId] == null) { 
-			this.layers.kml[layerId] = new google.maps.KmlLayer(kmlOptions.url+'?v='+this.kmlVersion, {
+		// If the layer doesn't exist yet, create one.		
+		if (this.layers.kml[layerId] === undefined) { 
+			this.layers.kml[layerId] = new google.maps.KmlLayer(kmlOptions.url + '?v=' + this.kmlVersion, {
 				suppressInfoWindows: kmlOptions.suppressInfoWindows, 
 				preserveViewport: kmlOptions.preserveViewport
 			});
@@ -92,11 +93,13 @@ function CampusMap(canvas) {
 	this.openMarker = function(markerId, panToMarker) {
 		panToMarker = panToMarker || false;	
 		google.maps.event.trigger(markers[markerId], 'click');
-		if (panToMarker) { map.panTo(markers[markerId].position); }
+		if (panToMarker) { 
+			map.panTo(markers[markerId].position); 
+		}
 	};
 	
 	function setInfoWindow(iw) {
-		if (infowindow != undefined) { infowindow.close(); }
+		if (infowindow !== undefined) { infowindow.close(); }
 		infowindow = iw;
 	}
 		
@@ -108,11 +111,11 @@ function CampusMap(canvas) {
 			position: latlng,
 			title: title,
 			map: showOnMap ? map : null,
-			icon: "http://maps.google.com/mapfiles/marker"+String.fromCharCode(label + 65)+".png"
+			icon: 'http://maps.google.com/mapfiles/marker' + String.fromCharCode(label + 65) + '.png'
 		});
 		
 		// Add the click event on the new marker so we can open its infoWindow
-		google.maps.event.addListener(marker, "click", function() {
+		google.maps.event.addListener(marker, 'click', function() {
 			// Create the infowindow
 			var infowindow = new google.maps.InfoWindow({
 				content: html,
@@ -129,7 +132,7 @@ function CampusMap(canvas) {
 		// Clear existing markers.
 		this.clearActiveMarkers(true);
 		
-		this.search.count = query.length;						
+		this.search.count = query.length;	
 		
 		// Loop through the ID query string and load the specified markers.
 		for (var i = 0; i < query.length; i++) {
@@ -148,7 +151,6 @@ function CampusMap(canvas) {
 			var marker = createMarker(latlng, markerData.name, (i % mapObj.search.pageSize), markerData.infoWindow.content, showMarker);													
 						
 			markers[markers.length] = marker;
-			htmls[htmls.length] = markerData.infoWindow.content;
 			
 			// Add the result so we can parse and display it later.
 			mapObj.search.results[mapObj.search.results.length] = markerData;
@@ -163,12 +165,12 @@ function CampusMap(canvas) {
 		updateResults();
 	}
 
-	this.searchMarkers = function(search) {	
+	this.searchMarkers = function(search, greedy) {	
 		// If the search is the same, simply loop through the result again.
 		// Otherwise, continue with the AJAX search.
 		if (this.search.query == search) {
 			// Clear the current active markers.
-			this.clearActiveMarkers(false);
+			this.clearActiveMarkers();
 
 			// Update the results listing and show the new markers within the given bounds.
 			updateResults();
@@ -183,6 +185,8 @@ function CampusMap(canvas) {
 			}
 			return;
 		}
+		
+		greedy = greedy || false;	
 	
 		this.search.query = search
 		
@@ -191,8 +195,7 @@ function CampusMap(canvas) {
 
 		var params = {
 			q: this.search.query,
-			page: this.search.curPage,
-			s: this.search.pageSize
+			greedy: greedy
 		};		
 		$.getJSON('ajax/search-map.php', params, function(data) {
 			if (data.length > 0) {	
@@ -208,7 +211,6 @@ function CampusMap(canvas) {
 					var marker = createMarker(latlng, markerData.name, (i % mapObj.search.pageSize), markerData.infoWindow.content, showMarker);													
 								
 					markers[markers.length] = marker;
-					htmls[htmls.length] = markerData.infoWindow.content;
 					
 					// Add the result so we can parse and display it later.
 					mapObj.search.results[mapObj.search.results.length] = markerData;
@@ -227,7 +229,7 @@ function CampusMap(canvas) {
 	
 	this.prepareForSearch = function() {
 		this.search.curPage = 1;
-		if (infowindow != undefined) {
+		if (infowindow !== undefined) {
 			infowindow.close();
 		}
 	}
@@ -247,9 +249,5 @@ function CampusMap(canvas) {
 				this.search.count = 0;
 			}
 		}
-	}
-	
-	function _getQueryString(a) {
-		return (a = location.search.match(RegExp("[?&]" + a + "=([^&]*)(&?)", "i"))) ? a[1] : a
 	}
 }
