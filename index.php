@@ -380,7 +380,7 @@ function updateResults() {
 			// Add a placeholder and remove the feedback content.
 			document.getElementById('map-results').innerHTML = '<dd>Loading...</dd>';
 			$('#map-results-feedback, #map-results-pagination').html('');
-			map.goToResultsPage(parseInt($(this).text()));
+			map.goToResultsPage(parseInt($(this).text()), updateResults);
 			return false;
 		}); 		
 		

@@ -165,7 +165,11 @@ function CampusMap(canvas) {
 		updateResults();
 	}
 
-	this.searchMarkers = function(search, greedy) {	
+	this.searchMarkers = function(search, greedy) {
+		if (typeof search !== 'string') {
+			return;
+		}
+		
 		// If the search is the same, simply loop through the result again.
 		// Otherwise, continue with the AJAX search.
 		if (this.search.query == search) {
@@ -186,7 +190,7 @@ function CampusMap(canvas) {
 			return;
 		}
 		
-		greedy = greedy || false;	
+			
 	
 		this.search.query = search
 		

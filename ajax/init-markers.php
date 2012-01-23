@@ -4,7 +4,7 @@
 		die('Direct access to this script is forbidden');
 	}
 */
-	if (!$markerData = @file_get_contents('markercache2.json')) {
+	if (!$markerData = @file_get_contents('markercache.json')) {
 		echo $markerData;
 		die();
 	} else {
@@ -100,7 +100,7 @@
 				// If there were matched departments, clone the original marker (i.e. building)
 				// and loop through each found marker, updating only the name.
 				if (count($mDepartments) > 0) {
-					$tempMarker = $markerData[$marker['name']];
+					$tempMarker = $markerData[$marker['id']];
 					foreach ($mDepartments as $k => $department) {
 						$tempMarker['id'] = count($markerData);
 						$tempMarker['name'] = $department['name'];
@@ -136,7 +136,7 @@
 		
 		// Encode, write and output the marker JSON.
 		$json = json_encode($markerData);		
-		file_put_contents('markercache2.json', $json);				
+		file_put_contents('markercache.json', $json);				
 		//echo $markerJSON;
 		
 		// Encode, write and output the building JSON.
