@@ -6,7 +6,7 @@ $(function(){
 	
 	window.LocationCollection = Backbone.Collection.extend({
 		model: Location,
-		url: "ajax/markercache2.json",
+		url: "ajax/markercache.json",
 		searchByQuery: function(query) {
 			var keywords = query.split(' ');
 			
