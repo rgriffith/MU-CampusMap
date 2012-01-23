@@ -97,6 +97,11 @@ $(function(){
 								
 					this.markers[i] = marker;				
 				}
+				
+				// If there is only one marker, open it and pan the map.
+				if (markerData.length === 1) {
+					this.openMarker(0, true);
+				}
 			}
 		},
 		
@@ -207,6 +212,7 @@ $(function(){
 		initialize: function() {
 			this.input = this.$("#kwsearch-keyword");
 			this.selectbox = this.$("#bldgsearch-select");
+			this.deepLinksIds = [];
 			
 			Locations.fetch();
 			
@@ -226,11 +232,26 @@ $(function(){
 			$("#options-nav-bar").find('a:first').addClass("selected");
 			$("#map-search").show(); 	
 			
-			// Preload the intro text for the Search tab.
-			//$('#map-overlays').css({display:'block'});
 			
-			$('#map-overlays').show();
+			// If there is a predefined query or marker ID's (via GET request), prefill the search input
+			// and load search for results.
+			// Else, just show the overlays options.
+			if (typeof query === 'string' && query !== null) {
+				this.input.val(unescape(query.replace('+', ' ')));
+				
+				// A slight timeout is needed to allow enough time for the Locations to load.
+				var t = setTimeout('window.App.searchByKeyword()', 100);
+			} else if (typeof deeplinksIds === 'string' && deeplinksIds !== null) {
+				this.deeplinksIds = deeplinksIds.split(',');
+				
+				// A slight timeout is needed to allow enough time for the Locations to load.
+				var t = setTimeout('window.App.searchByIDs()', 100);
+			} else {
+				// Preload the intro text for the Search tab.
+				$('#map-overlays').css({display:'block'});
+			}
 			
+					
 			// Add a click event to the tabs.
 			$('#options-nav-bar').on('click','a.tab-button',function(){
 				var tab = this;
@@ -297,11 +318,6 @@ $(function(){
 					CampusMap.removeKmlLayer(checkbox.id);
 				}
 			});	
-			
-			if (typeof query === 'string' && query !== null) {
-				this.input.val(unescape(query.replace('+', ' ')));
-				appObj.trigger('submit form#marker-search: "searchByKeyword"');
-			}
 		},
 		
 		togglePanelDisplay: function() {
@@ -335,96 +351,99 @@ $(function(){
 		
 		// Search the Markers Collection
 		updateResults: function() {
-			var appObj = this;
-			
-			var totalPages = Math.ceil(this.searchResults.length / this.searchOpts.pageSize),
-				resultsPagesHTML = '<ul id="results-page-1" class="page active">',
+			var appObj = this,
+				totalPages = Math.ceil(this.searchResults.length / this.searchOpts.pageSize),
+				resultsPagesHTML = '',
 				i = 0;
 			
-			for (; i < this.searchResults.length; i++) {		
-				var tempPage = Math.floor(i/this.searchOpts.pageSize)+1,
-					label = i % this.searchOpts.pageSize;
+			if (this.searchResults.length < 1) {
+				$('#map-results').html('<div class="alert-message block-message warning"><p>No results were found for <strong><em>' + (this.selectbox.val() !== '' ? this.selectbox.val() : this.input.val()) + '</em></strong>.<br /><br />Please make sure building or department names are spelled correctly.</p></div>');
+			} else {				
+				resultsPagesHTML += '<ul id="results-page-1" class="page active">';
 				
-				if (tempPage > this.searchOpts.curPage) {
-					this.searchOpts.curPage = tempPage;
-					resultsPagesHTML += '</ul><ul id="results-page-'+this.searchOpts.curPage+'" class="page">';						
+				for (; i < this.searchResults.length; i++) {		
+					var tempPage = Math.floor(i/this.searchOpts.pageSize)+1,
+						label = i % this.searchOpts.pageSize;
+					
+					if (tempPage > this.searchOpts.curPage) {
+						this.searchOpts.curPage = tempPage;
+						resultsPagesHTML += '</ul><ul id="results-page-'+this.searchOpts.curPage+'" class="page">';						
+					}
+					
+					resultsPagesHTML += this.resultsTemplate({id: i, label: label, marker: this.searchResults[i].toJSON()});
 				}
 				
-				resultsPagesHTML += this.resultsTemplate({id: i, label: label, marker: this.searchResults[i].toJSON()});
+				resultsPagesHTML += '</ul>';
+				
+				$('#map-results-stats').html(this.statsTemplate({
+					lowerBound: 0,
+					upperBound: this.searchOpts.pageSize,
+					resultCount: this.searchResults.length,
+					query: this.input.val()
+				}));
+				
+				$('#map-results').html(resultsPagesHTML);
+				
+				$('.kwsearch-clear').css({display:'block'});
+				
+				$('#map-results li').on('click','a',function(){		
+					CampusMap.openMarker(this.id.replace('result-',''));			
+					return false;
+				});
+				
+				// Add the pagination HTML and add a click event to each pagination link.
+				// Each link will "show" a corresponding page.
+				$('#map-results-pagination').html(this.renderPagination({totalPages: totalPages, currentPage: 1}));
+				
+				$('#map-results-pagination').on('click' ,'a', function() {				
+					// Reset the active page and pagination link.
+					$('.page.active', $('#map-results')).removeClass('active');		    	
+			
+					$('#map-results-pagination').html(appObj.renderPagination({
+						totalPages: totalPages, 
+						currentPage: $(this).text()
+					}));
+					
+					// Make the corresponding results page active.
+					$('#results-page-'+$(this).text(), $('#map-results')).addClass('active');
+					
+					// Update the stats.
+					var lowerBound = (parseInt($(this).text()) - 1) * appObj.searchOpts.pageSize;
+					var upperBound = lowerBound + appObj.searchOpts.pageSize;
+					upperBound = (upperBound <= appObj.searchResults.length ? upperBound : appObj.searchResults.length);
+					
+					$('#map-results-stats').html(appObj.statsTemplate({
+						lowerBound: lowerBound,
+						upperBound: upperBound,
+						resultCount: appObj.searchResults.length,
+						query: appObj.input.val()
+					}));
+					
+					// Reset the map and add the next set of Markers.				
+					CampusMap.clearActiveMarkers();
+					for (var i = lowerBound; i < upperBound; i++) {
+						// The markers are already created, so all we need to do is add them
+						// to the map.
+						CampusMap.markers[i].setMap(CampusMap.map);
+					}
+					
+					return false;
+				});
 			}
-			
-			resultsPagesHTML += '</ul>';
-			
-			$('#map-results-stats').html(this.statsTemplate({
-				lowerBound: 0,
-				upperBound: this.searchOpts.pageSize,
-				resultCount: this.searchResults.length,
-				query: this.input.val()
-			}));
-			
-			$('#map-results').html(resultsPagesHTML);
-			
-			$('#map-results li').on('click','a',function(){		
-				CampusMap.openMarker(this.id.replace('result-',''));			
-				return false;
-			});
-			
-			// Add the pagination HTML and add a click event to each pagination link.
-			// Each link will "show" a corresponding page.
-			$('#map-results-pagination').html(this.renderPagination({totalPages: totalPages, currentPage: 1}));
-			
-			$('#map-results-pagination').on('click' ,'a', function() {				
-				// Reset the active page and pagination link.
-				$('.page.active', $('#map-results')).removeClass('active');		    	
-		
-				$('#map-results-pagination').html(appObj.renderPagination({
-					totalPages: totalPages, 
-					currentPage: $(this).text()
-				}));
-				
-				// Make the corresponding results page active.
-				$('#results-page-'+$(this).text(), $('#map-results')).addClass('active');
-				
-				// Update the stats.
-				var lowerBound = (parseInt($(this).text()) - 1) * appObj.searchOpts.pageSize;
-				var upperBound = lowerBound + appObj.searchOpts.pageSize;
-				upperBound = (upperBound <= appObj.searchOpts.count ? upperBound : appObj.searchOpts.count);
-				
-				$('#map-results-stats').html(appObj.statsTemplate({
-					lowerBound: lowerBound,
-					upperBound: upperBound,
-					resultCount: appObj.searchOpts.count,
-					query: appObj.input.val()
-				}));
-				
-				// Reset the map and add the next set of Markers.				
-				CampusMap.clearActiveMarkers();
-				for (var i = lowerBound; i < upperBound; i++) {
-					// The markers are already created, so all we need to do is add them
-					// to the map.
-					CampusMap.markers[i].setMap(CampusMap.map);
-				}
-				
-				return false;
-			});
-			
-			$('#map-results-wrap').css({display: 'block'});
 			
 			$('#map-overlays').css({display: 'none'});
 						
 			// Reset the map and add the new Markers.
 			CampusMap.clearActiveMarkers();
 			CampusMap.addMarkers(this.searchResults, this.searchOpts.pageSize);
+			
+			// Show the results.
+			$('#map-results-wrap').css({display: 'block'});
 		},
 		
 		searchByKeyword: function() {
 			this.searchResults = Locations.searchByQuery(this.input.val());
-
-			this.searchOpts.count = this.searchResults.length;
-			
-			$('.kwsearch-clear').css({display:'block'});
-			this.selectbox[0].selectedIndex = 0;
-			
+			this.selectbox[0].selectedIndex = 0;			
 			this.updateResults();
 			
 			return false;
@@ -433,10 +452,24 @@ $(function(){
 		searchByBuilding: function() {
 			this.searchResults = Locations.searchById(this.selectbox.val());
 			this.input.val('"'+this.selectbox[0].options[this.selectbox[0].selectedIndex].text+'"');
-			$('.kwsearch-clear').css({display:'block'});
-			this.updateResults(this.selectbox.val());	
+			this.updateResults();	
 
 			return false;		
+		},
+		
+		searchByIDs: function() {
+			var i = 0;
+			
+			// Loop through the IDs and load the specified markers.
+			for (; i < this.deeplinksIds.length; i++) {
+				var model = Locations.get(this.deeplinksIds[i]);
+				
+				if (model !== undefined) {
+					this.searchResults.push(model);
+				}
+			}
+			
+			this.updateResults();	
 		},
 		
 		// Clear the search results.
