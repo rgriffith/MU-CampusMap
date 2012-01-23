@@ -53,6 +53,13 @@ body { height: 100%; margin: 0px; padding: 0px }
 	position:absolute; bottom: 0; left: 0; right: 0; top: 73px; margin-left: 340px;
 }
 
+	#map-canvas label {
+		float: right;
+		padding-top: 2px;
+		width: auto;
+		text-align: left;		
+	}
+
 #panel-wrapper {
 	height: 100%;
 }
