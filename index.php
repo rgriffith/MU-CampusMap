@@ -6,7 +6,7 @@
 	
 	<title>Millersville Campus Map v3</title> 
 	
-	<link rel="stylesheet" media="all" href="directions.css?v=1.1" />
+	<link rel="stylesheet" media="all" href="css/directions.css?v=1.1" />
 </head> 
 
 <body> 
@@ -88,7 +88,7 @@
 						</fieldset>
 					</form>
 				</div>				
-				<div id="map-overlays" class="tabs-content" style="display:none;">		
+				<div id="map-overlays" class="tabs-content">		
 					<!--<h4>Looking for something?</h4>
 					<p>Try searching for a building or department in the text box above <strong>(e.g. Lyle Hall or Biology)</strong> and hitting enter, or, try selecting a building from the <a href="#" onclick="$('#tablink-buildings').click();return false;">Building List</a>.</p> 
 					<p>Or, use the <a href="#" onclick="$('#tablink-mapoptions').click();return false;">Map Options tab</a> to show/hide various building categories and other campus services.</p>
@@ -168,7 +168,7 @@
 
 <script src="//maps.google.com/maps/api/js?sensor=true" type="text/javascript"></script>
 
-<script src="map.js" type="text/javascript"></script>
+<script src="js/map.js" type="text/javascript"></script>
 
 <script type="text/javascript"> 
 
@@ -183,7 +183,14 @@ var bldgCheckboxes = [
 
 // When page loads...
 $(function() {
-	
+	// Function used to clear the current results HTML and markers.
+	var clearResults = function(resetMarkers) {
+		resetMarkers = resetMarkers || false;				
+		$('#map-results-pagination, #map-results-feedback, #map-results').html('');	
+		$('#map-overlays').css({display:'none'});
+		map.clearActiveMarkers(resetMarkers);	
+	};
+
 	// Hide all tab content.
 	// Activate first tab.
 	// Show first tab content
@@ -193,10 +200,6 @@ $(function() {
 	
 	// Preload the intro text for the Search tab.
 	$('#map-overlays').css({display:'block'});
-	
-	// Set the height of the options content so the browser knows when to add
-	// the scrolling overflow.
-	$('#map-options-content').css({height:'660px'});
 
 	//On Click/Change Events
 	$('#options-nav-bar').on('click','a',function(){
@@ -220,16 +223,25 @@ $(function() {
 			$($(tab).attr('href')).fadeIn(); 			
 			
 			// If there are no results to display, show the overlays options as well.
-			$('#map-overlays').css({display: (map.search.count !== 0 ? 'none' : 'block')});
+			if (tab.id != 'tablink-mapoptions') {
+				$('#map-overlays').css({display: (map.search.count !== 0 ? 'none' : 'block')});
+			}
 		}
 		return false;
 	});
 	
 	$('#bldgsearch-select').on('change', function() {
-		// Show the selected marker, this will hide the previous selection
-		// if applicable.
-		clearResults();
-		map.deepLinkMarkers([this.value]);
+		// If the user chose no building, just clear everything and reset
+		// by triggering the clear icon's click event.
+		if (this.value === '') {
+			$('.kwsearch-clear').click();
+		} else {
+			// Show the selected marker, this will hide the previous selection
+			// if applicable.
+			clearResults();
+			$('input#kwsearch-keyword').val('"'+this.options[this.selectedIndex].text+'"');
+			map.deepLinkMarkers([this.value]);
+		}
 		return false;
 	});
 	
@@ -267,13 +279,6 @@ $(function() {
 		}
 	});		
 	
-	//Clear the current results HTML and markers.
-	var clearResults = function() {			
-		$('#map-results-pagination, #map-results-feedback, #map-results').html('');	
-		$('#map-overlays').css({display:'none'});
-		map.clearActiveMarkers();	
-	};
-	
 	// When results are added, we'll show a nice little clear icon.
 	// This will add the click event to reset and clear the results.
 	$('.kwsearch-clear').on('click', function(){
@@ -285,7 +290,7 @@ $(function() {
 		
 		$('.kwsearch-clear').hide();
 		
-		clearResults();
+		clearResults(true);
 		$('#map-overlays').css({display:'block'});
 		
 		kwsearchInput.focus();
@@ -341,7 +346,10 @@ function updateResults() {
 			resultsHtml += '<dd><a id="result-'+index+'" href="#">'+map.search.results[index].name+'<span>'+map.search.results[index].address+'</span></a></dd>';
 			index++;
 		}
-
+		
+		// Hide the Overlays conent.
+		$('#map-overlays').css({display: 'none'});
+		
 		document.getElementById('map-results-feedback').innerHTML = '<p>Showing <strong>'+(lowerBound == 0 ? 1 : lowerBound+1)+'-'+(upperBound <= map.search.count ? upperBound : map.search.count)+'</strong> of <strong>'+map.search.count+'</strong>'+(map.search.query != '' ? ' for <em>'+map.search.query+'</em>' : '')+'.</p>';
 		
 		// Add marker results and a click event to each one so the corresponding
