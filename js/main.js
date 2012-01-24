@@ -11,12 +11,12 @@ $(function(){
 			var keywords = query.split(' ');
 			
 			if (query.match(/^"[\w\s]*/i) !== null) {
-				query = query.slice(1, query.length-1);
+				query = query.slice(1, query.length - 1);
 				return this.filter(function(loc){
 					return loc.get('name').match(query) !== null;
 				});
 			} else {			
-				return this.filter(function(loc){
+				return this.filter(function(loc) {
 					for (var i = 0; i < keywords.length; i++) {
 						var pattern = new RegExp(keywords[i], 'i');
 						if (pattern.test(loc.get('name')) 
@@ -33,7 +33,7 @@ $(function(){
 			}
 		},
 		searchById: function(locId) {
-			return this.filter(function(loc){
+			return this.filter(function(loc) {
 				return parseInt(loc.get('id')) === parseInt(locId);
 			});
 		}
@@ -42,21 +42,22 @@ $(function(){
 	// Create our global collection of Locations.
 	window.Locations = new LocationCollection;
 	
-	
+	// The Map portion of the UI
+	// Includes methods to interact with a Google Map object.
+	// ---------------
 	window.MapView = Backbone.View.extend({	
 		el: $("#map-canvas"),
 		
 		map: null,
 		kmlVersion: '1.4',
 		layers: {
-			kml: [],
-			buildings: ['academicsLayer', 'administrativeLayer', 'dormLayer']
+			kml: []
 		},
 		markers: [],
 		infowindow: null,
 		
-		initialize: function() {
-			// Initialize the Google map.
+		// Initialize the Google map.
+		initialize: function() {			
 			this.map = new google.maps.Map(document.getElementById('map-canvas'), {
 				zoom: 16,
 				zoomControl: true,
@@ -68,6 +69,7 @@ $(function(){
 			this.render();
 		},
 		
+		// Load the default "base layer" with everything on it.
 		render: function() {
 			var baseKmlUrl = 'http://www.millersville.edu/directions/kml/mobile/marker-dump.kml?v=' + this.kmlVersion;
 			
@@ -76,10 +78,12 @@ $(function(){
 			this.layers.kml['baseLayer'].setMap(this.map);		
 		},
 		
+		// Trigger a resize on the map, useful for "refreshing" the bounds.
 		resizeMap: function() {
 			google.maps.event.trigger(this.map, 'resize'); 
 		},
 		
+		// Loop over marker data and create new markers.
 		addMarkers: function(markerData, pageSize) {
 			var i = 0,
 				pageSize = pageSize || 6;
@@ -105,10 +109,10 @@ $(function(){
 			}
 		},
 		
+		// Create a new marker based on provided data.
 		createMarker: function(latlng, title, label, html, showOnMap) {
 			var mapObj = this,
-				showOnMap = showOnMap || false;	
-			
+				showOnMap = showOnMap || false;			
 		
 			// Create the marker and push it onto the markers array.
 			var marker = new google.maps.Marker({
@@ -132,6 +136,7 @@ $(function(){
 			return marker;
 		},
 		
+		// Open a given marker.
 		openMarker: function(markerId, panToMarker) {
 			panToMarker = panToMarker || false;	
 			google.maps.event.trigger(this.markers[markerId], 'click');
@@ -140,6 +145,7 @@ $(function(){
 			}
 		},
 		
+		// Clear the currently active markers.
 		clearActiveMarkers: function(resetMarkers) {
 			resetMarkers = resetMarkers || false;	
 		
@@ -155,11 +161,13 @@ $(function(){
 			}
 		},
 		
+		// Set the active infowindow.
 		setInfoWindow: function(iw) {
 			if (this.infowindow !== null) { this.infowindow.close(); }
 			this.infowindow = iw;
 		},
 		
+		// Show a given KML layer. Add if it non-existent.
 		showKmlLayer: function(layerId, kmlOptions) {
 			// If the layer doesn't exist yet, create one.		
 			if (this.layers.kml[layerId] === undefined) { 
@@ -173,15 +181,17 @@ $(function(){
 			this.layers.kml[layerId].setMap(this.map);
 		},
 		
+		// Remove a KML layer from the map.
 		removeKmlLayer: function(layerId) {
 			this.layers.kml[layerId].setMap(null);
-		},
+		}
 	});
 	
 	window.CampusMap = new MapView;
 	
 	// The Main Applicaiton UI
-	// Includes search results, overlay tabs and map.
+	// Includes search results and overlay tabs.
+	// Manipulates the CampusMap object
 	// ---------------
 	
 	window.AppView = Backbone.View.extend({	
@@ -196,7 +206,6 @@ $(function(){
 		
 		searchResults: [],
 		searchOpts: {
-			count: 0,
 			curPage: 1,
 			pageSize: 6		
 		},
@@ -224,14 +233,9 @@ $(function(){
 				query = this.getQueryString('query'),
 				deeplinksIds = this.getQueryString('id'),
 				bldgCheckboxes = ['academicsLayer','administrativeLayer','dormLayer'];
-			
-			// Hide all tab content.
-			// Activate first tab.
-			// Show first tab content
-			//$(".tab-content").hide(); 
+
 			$("#options-nav-bar").find('a:first').addClass("selected");
-			$("#map-search").show(); 	
-			
+			$("#map-search").show(); 				
 			
 			// If there is a predefined query or marker ID's (via GET request), prefill the search input
 			// and load search for results.
@@ -249,8 +253,7 @@ $(function(){
 			} else {
 				// Preload the intro text for the Search tab.
 				$('#map-overlays').css({display:'block'});
-			}
-			
+			}			
 					
 			// Add a click event to the tabs.
 			$('#options-nav-bar').on('click','a.tab-button',function(){
@@ -320,6 +323,7 @@ $(function(){
 			});	
 		},
 		
+		// Show/Hide the features panel.
 		togglePanelDisplay: function() {
 			var offset = this.$('#features-panel').offset(),
 				appObj = this;
@@ -349,7 +353,7 @@ $(function(){
 			return false;
 		},
 		
-		// Search the Markers Collection
+		// Update the search results, based on searching the Locations Collection.
 		updateResults: function() {
 			var appObj = this,
 				totalPages = Math.ceil(this.searchResults.length / this.searchOpts.pageSize),
@@ -358,9 +362,9 @@ $(function(){
 			
 			if (this.searchResults.length < 1) {
 				$('#map-results').html('<div class="alert-message block-message warning"><p>No results were found for <strong><em>' + (this.selectbox.val() !== '' ? this.selectbox.val() : this.input.val()) + '</em></strong>.<br /><br />Please make sure building or department names are spelled correctly.</p></div>');
-			} else {				
-				resultsPagesHTML += '<ul id="results-page-1" class="page active">';
-				
+			} else {	
+				// Loop through the results and generate the result HTML.			
+				resultsPagesHTML += '<ul id="results-page-1" class="page active">';				
 				for (; i < this.searchResults.length; i++) {		
 					var tempPage = Math.floor(i/this.searchOpts.pageSize)+1,
 						label = i % this.searchOpts.pageSize;
@@ -371,10 +375,10 @@ $(function(){
 					}
 					
 					resultsPagesHTML += this.resultsTemplate({id: i, label: label, marker: this.searchResults[i].toJSON()});
-				}
-				
+				}				
 				resultsPagesHTML += '</ul>';
 				
+				// Update the viewing stats.
 				$('#map-results-stats').html(this.statsTemplate({
 					lowerBound: 0,
 					upperBound: this.searchOpts.pageSize,
@@ -395,20 +399,23 @@ $(function(){
 				// Each link will "show" a corresponding page.
 				$('#map-results-pagination').html(this.renderPagination({totalPages: totalPages, currentPage: 1}));
 				
+				// Add a click event to the pagination links.
 				$('#map-results-pagination').on('click' ,'a', function() {				
+					var pageClicked = parseInt($(this).text());
+				
 					// Reset the active page and pagination link.
-					$('.page.active', $('#map-results')).removeClass('active');		    	
-			
+					$('.active', $('#map-results')).removeClass('active');		    	
+					
 					$('#map-results-pagination').html(appObj.renderPagination({
 						totalPages: totalPages, 
-						currentPage: $(this).text()
+						currentPage: pageClicked
 					}));
 					
 					// Make the corresponding results page active.
-					$('#results-page-'+$(this).text(), $('#map-results')).addClass('active');
+					$('#results-page-'+pageClicked, $('#map-results')).addClass('active');
 					
 					// Update the stats.
-					var lowerBound = (parseInt($(this).text()) - 1) * appObj.searchOpts.pageSize;
+					var lowerBound = (pageClicked - 1) * appObj.searchOpts.pageSize;
 					var upperBound = lowerBound + appObj.searchOpts.pageSize;
 					upperBound = (upperBound <= appObj.searchResults.length ? upperBound : appObj.searchResults.length);
 					
@@ -431,6 +438,7 @@ $(function(){
 				});
 			}
 			
+			// Hide the overlays options content.
 			$('#map-overlays').css({display: 'none'});
 						
 			// Reset the map and add the new Markers.
@@ -441,6 +449,7 @@ $(function(){
 			$('#map-results-wrap').css({display: 'block'});
 		},
 		
+		// Search the Locations Collection by keyword.
 		searchByKeyword: function() {
 			this.searchResults = Locations.searchByQuery(this.input.val());
 			this.selectbox[0].selectedIndex = 0;			
@@ -449,6 +458,7 @@ $(function(){
 			return false;
 		},
 		
+		// Search the Locations Collection by building selectbox.
 		searchByBuilding: function() {
 			this.searchResults = Locations.searchById(this.selectbox.val());
 			this.input.val('"'+this.selectbox[0].options[this.selectbox[0].selectedIndex].text+'"');
@@ -457,6 +467,7 @@ $(function(){
 			return false;		
 		},
 		
+		// Search the Locations Collection by IDs provided via GET request (CSV format).
 		searchByIDs: function() {
 			var i = 0;
 			
@@ -488,6 +499,7 @@ $(function(){
 			return false;
 		},
 		
+		// Update the search results pagination.
 		renderPagination: function(opts) {
 			var currentPage = opts.currentPage <= 1 ? 1 : parseInt(opts.currentPage),
 				anchorSize = 2,
@@ -550,163 +562,12 @@ $(function(){
 		    return html;
 		},
 		
+		// Returns the value for a given GET variable.
 		getQueryString: function(a) {
 			return (a = location.search.match(new RegExp("[?&]" + a + "=([^&]*)(&?)", "i"))) ? a[1] : a;
 		}
 	});
 	
-	
-	// Finally, we kick things off by creating the **App**.
+	// Create the "app"
 	window.App = new AppView;
 });
-
-
-/*
-$(function(){
-
-	// Marker Model
-	// ----------
-	
-	// Our basic **Marker** model.
-	window.Marker = Backbone.Model.extend();
-	
-	window.MarkerCollection = Backbone.Collection.extend({
-		model: Marker,
-		url: "ajax/markercache2.json",
-		search: function(query) {
-			return this.filter(function(marker){							
-				var keywords = query.split(' ');
-				for (var i = 0; i < keywords.length; i++) {
-					var pattern = new RegExp(keywords[i], 'i');
-					if (pattern.test(marker.get('name')) 
-						|| pattern.test(marker.get('address')) 
-						|| pattern.test(marker.get('id')) 
-						|| _.indexOf(marker.get('departments'), keywords[i]) !== -1
-						) {
-						return true;
-					}
-				}
-				
-				return false;
-			});
-		}
-	});
-	
-	// Create our global collection of **Markers**.
-	window.Markers = new MarkerCollection;
-	
-	
-	window.TabView = Backbone.View.extend({
-		el: $("#features-panel"),
-		
-		// Delegated events for creating new items, and clearing completed ones.
-		events: {
-			"click a#map-options-toggler": "toggleDisplay"
-		},
-		
-		// At initialization we bind to the relevant events on the `Todos`
-		// collection, when items are added or changed. Kick things off by
-		// loading any preexisting todos that might be saved in *localStorage*.
-		initialize: function() {
-			this.input = this.$("#kwsearch-keyword");			
-			Markers.fetch();
-		},
-	});	
-	
-	// The Feature Panel
-	// ---------------
-	
-	// Our **AppView** is the panel piece of UI.
-	window.PanelView = Backbone.View.extend({
-	
-		// Instead of generating a new element, bind to the existing skeleton of
-		// the App already present in the HTML.
-		el: $("#campusmap-ui"),
-		
-		// Our template for the line of statistics at the bottom of the app.
-		//statsTemplate: _.template($('#stats-template').html()),
-		resultsTemplate: _.template($('#search-results-item').html()),
-		
-		searchResults: [],
-		
-		// Delegated events for creating new items, and clearing completed ones.
-		events: {
-			"submit form#marker-search": "searchAndUpdate",
-			"click span.kwsearch-clear": "clearResults",
-			"click a#map-options-toggler": 'toggleDisplay'
-		},
-		
-		// At initialization we bind to the relevant events on the `Todos`
-		// collection, when items are added or changed. Kick things off by
-		// loading any preexisting todos that might be saved in *localStorage*.
-		initialize: function() {
-			this.input = this.$("#kwsearch-keyword");			
-			Markers.fetch();
-		},
-		
-		// If you hit return in the main input field, and there is text to save,
-		// create new **Todo** model persisting it to *localStorage*.
-		searchAndUpdate: function() {
-			var text = this.input.val();
-			
-			this.searchResults = Markers.search(text);
-			
-			console.log(this.searchResults);
-			
-			var resultsHtml = '';
-			for (var i = 0; i < this.searchResults.length; i++) {		
-				resultsHtml += this.resultsTemplate({label:i,marker:this.searchResults[i].toJSON()});
-			}
-			
-			this.$('#map-results').html(resultsHtml);
-			
-			// Show the clear icon.
-			this.$('.kwsearch-clear').css({display:'block'});
-			
-			return false;
-			
-		},
-		
-		// Clear the search results.
-		clearResults: function() {
-			alert($(this.el).text());
-		
-			this.$('#map-results').html('');
-			this.$('.kwsearch-clear').css({display:'none'});
-			this.input.val('');
-			this.searchResults = [];
-			return false;
-		},
-
-		toggleDisplay: function() {
-			var offset = this.$('#features-panel').offset();
-			
-			if (offset.left < 0 ) {
-				// Show the options panel
-				$("#features-panel, #map-canvas").animate({left: "0px"}, 100, "linear");
-				
-				// Maximize the tab bar.
-				$("#options-nav-bar").animate({left: '0px', height: '29px'}, 100, "linear", function() {
-					// Switch the arrow's orientation and title.
-					$('#map-options-toggler').attr('title','Close this sidebar').css({backgroundPosition:'48% 4px', top:'13px', right:'10px'});
-				});
-			} else {
-				// Hide the options pabel.
-				//$("#map-options, #map-canvas").animate({left: "-300px"}, 100, "linear", map.resizeMap);	
-				$("#features-panel, #map-canvas").animate({left: "-320px"}, 100, "linear");					
-				
-				// Minify the tab bar, showing only the arrow.
-				$("#options-nav-bar").animate({left: "-288px", height: '2px'}, 100, "linear", function(){
-					// Switch the arrow's orientation and title.
-					$('#map-options-toggler').attr('title','Open this sidebar').css({backgroundPosition:'48% -28px', top:'0', right:'-1px'});
-				});
-			}
-			return false;
-		}
-	});
-	
-	
-	// Finally, we kick things off by creating the **App**.
-	window.App = new PanelView;
-});
-*/
