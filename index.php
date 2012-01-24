@@ -9,7 +9,7 @@
 <body>
 
 <div id="header">
-	<a href="#" id="millersville-logo"><img src="http://www.millersville.edu/lib/v2/img/common/millersville-university-logo.jpg" alt="Millersville University Home" /></a>
+	<a href="#" id="millersville-logo"><img src="http://www.millersville.edu/lib/v2/img/common/millersvilleCircleM-32.png" alt="Millersville University Home" /></a>
 	<h1 id="the-title">Campus Map</h1>
 	<form action="http://www.millersville.edu/searchresults.php" id="search-mu" method="get" name="search">
 		<fieldset> 

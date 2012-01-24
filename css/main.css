@@ -4,7 +4,7 @@ html { height: 100%; overflow-y: hidden; }
 body { height: 100%; margin: 0px; padding: 0px }
 
 #header {
-	height: 70px;
+	height: 55px;
 	width: 100%;
 	position: relative;
 	top: 0;
@@ -13,8 +13,8 @@ body { height: 100%; margin: 0px; padding: 0px }
 }
 	#millersville-logo {
 		float: left;
-		margin: 10px 0 0 20px;
-		width: 300px;
+		margin: 10px 10px 10px 20px;
+		width: 32px;
 		border: none;
 	}
 		#millersville-logo img {
@@ -22,8 +22,9 @@ body { height: 100%; margin: 0px; padding: 0px }
 		}
 		
 	#the-title {
+		font-family: Georgia, "Times New Roman", serif;
 		float: left;
-		line-height: 70px;
+		line-height: 53px;
 		margin: 0;
 		padding: 0;		
 		width: 50%;
@@ -50,7 +51,7 @@ body { height: 100%; margin: 0px; padding: 0px }
 }
 
 #map-canvas {
-	position:absolute; bottom: 0; left: 0; right: 0; top: 73px; margin-left: 340px;
+	position:absolute; bottom: 0; left: 0; right: 0; top: 58px; margin-left: 340px;
 }
 
 	#map-canvas label {
