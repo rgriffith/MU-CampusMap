@@ -2,11 +2,36 @@ $(function(){
 	
 	// Location Model and Collection
 	// ----------
-	window.Location = Backbone.Model.extend();
+	window.Location = Backbone.Model.extend({
+		defaults: {
+			label: 0,
+			showOnMap: false,
+			showInfowindow: false,
+			marker: null
+		},
+		
+		initialize: function() {
+			var attributes = this.toJSON(),
+				marker = new google.maps.Marker({
+							position: new google.maps.LatLng(parseFloat(attributes.lat), parseFloat(attributes.lng)),
+							title: attributes.name,
+							map: null,
+							icon: 'http://maps.google.com/mapfiles/marker' + String.fromCharCode(attributes.label + 65) + '.png'
+						});		
+			
+			// Update the result's marker attribute.
+			this.set({marker: marker});
+		}
+	});
 	
 	window.LocationCollection = Backbone.Collection.extend({
 		model: Location,
 		url: "ajax/markercache.json",
+		
+		initialize: function() {
+			this.bind('change:label', this.updateMarkerIcon);
+		},
+		
 		searchByQuery: function(query) {
 			var keywords = query.split(' ');
 			
@@ -32,37 +57,42 @@ $(function(){
 				});
 			}
 		},
+		
 		searchById: function(locId) {
 			return this.filter(function(loc) {
 				return parseInt(loc.get('id')) === parseInt(locId);
 			});
-		}
-	});
-	
-	// Create our global collection of Locations.
-	window.Locations = new LocationCollection;
-	
-	
-	window.Result = Backbone.Model.extend({
-		defaults: {
-			showOnMap: false,
-			showInfowindow: false,
-			gMarker: null
-		}
-	});
-	
-	window.ResultCollection = Backbone.Collection.extend({
-		model: Result,
-		removeAll: function() {
-			this.each(function(result) {
-				result.get('gMarker').setMap(null);
-			});
+		},
+		
+		getShownMarkers: function() {
+			return this.filter(function(location){ 
+					return location.get('marker').getMap() !== null;
+				});
+		},
+		
+		removeShownMarkers: function() {
+			var shown = this.getShownMarkers();
 			
-			this.reset();
+			if (shown.length > 0) {
+				_.each(shown, function(location) {
+					var marker = location.get('marker');
+					
+					location.set({showOnMap: false});
+					
+					// Remove from map and remove click listener.
+					marker.setMap(null);
+					google.maps.event.clearListeners(marker, 'click');
+				});
+			}
+		},
+		
+		updateMarkerIcon: function(location) {
+			var marker = location.get('marker'),
+				label = location.get('label');
+				
+			marker.setIcon('http://maps.google.com/mapfiles/marker' + String.fromCharCode(label + 65) + '.png')
 		}
 	});
-	
-	window.Results = new ResultCollection;
 	
 	
 	// The Map portion of the UI
@@ -92,11 +122,9 @@ $(function(){
 				mapTypeId: google.maps.MapTypeId.ROADMAP
 			});
 			
-			this.collection = Results;
-			
-			// When a new marker is created and added to the collection, add it to the map.
-			this.collection.bind('add', this.createMarker, this);
-			this.collection.bind('change:showInfowindow', this.openMarkerInfoWindow);
+			// Set up some bind events so we know when to manipulate the markers on the map.
+			this.collection.bind('change:showOnMap', this.addMarker, this);
+			this.collection.bind('change:showInfowindow', this.openMarkerInfowindow);
 			
 			// Load the default "base" KML layer onto the map.		
 			this.layers.kml['baseLayer'] = new google.maps.KmlLayer(baseKmlUrl, {suppressInfoWindows: false, preserveViewport: true});
@@ -144,37 +172,41 @@ $(function(){
 			google.maps.event.trigger(this.map, 'resize'); 
 		},
 		
-		// Create a new marker based on provided data.
-		createMarker: function(result) {
+		// Add the marker to the map and create its click event listener.
+		addMarker: function(result) {
 			var self = this,
-				resultAttributes = result.toJSON(),
-				marker = new google.maps.Marker({
-							position: new google.maps.LatLng(parseFloat(resultAttributes.lat), parseFloat(resultAttributes.lng)),
-							title: resultAttributes.name,
-							map: self.map,
-							icon: 'http://maps.google.com/mapfiles/marker' + String.fromCharCode(resultAttributes.label + 65) + '.png'
-						});		
+				attributes = result.toJSON(),
+				marker = attributes.marker;		
+
+			marker.setMap(this.map);
 			
 			// Add the click event on the new marker so we can open its infoWindow
 			google.maps.event.addListener(marker, 'click', function() {
 				// Create the infowindow
 				var infowindow = new google.maps.InfoWindow({
-					content: resultAttributes.infoWindow.content,
+					content: attributes.infoWindow.content,
 					position: marker.getPosition()
 				});
 				
 				self.setInfoWindow(infowindow);
 				infowindow.open(self.map, marker);
 			});
+		},
+		
+		updateMarkerIcon: function(result) {
+			var marker = result.get('marker'),
+				label = result.get('label');
 			
-			// Update the result's marker attribute.
-			result.set({gMarker: marker});
+			marker.setIcon('http://maps.google.com/mapfiles/marker' + String.fromCharCode(label + 65) + '.png');
 		},
 		
 		// Open a given marker's infowindow.
-		openMarkerInfoWindow: function(result) {
-			if (result.get('showInfowindow') === true) {
-				google.maps.event.trigger(result.get('gMarker'), 'click');
+		openMarkerInfowindow: function(result) {
+			var marker = result.get('marker');
+			
+			// Make sure the marker is to be shown and that it's on the map first.
+			if (result.get('showInfowindow') === true && marker.getMap() !== null) {
+				google.maps.event.trigger(marker, 'click');
 			}
 		},
 		
@@ -236,8 +268,6 @@ $(function(){
 			this.selectbox = this.$("#bldgsearch-select");
 			this.deepLinksIds = [];
 			
-			this.collection = Results;
-			
 			$("#options-nav-bar").find('a:first').addClass("selected");
 			$("#map-search").show(); 
 			
@@ -283,15 +313,14 @@ $(function(){
 		updateResults: function() {
 			var self = this,
 				totalPages = Math.ceil(this.searchResults.length / this.searchOpts.pageSize),
-				resultsPagesHTML = '',
-				i = 0;
+				resultsPagesHTML = '';
 			
 			if (this.searchResults.length < 1) {
 				$('#map-results').html('<div class="alert-message block-message warning"><p>No results were found for <strong><em>' + (this.selectbox.val() !== '' ? this.selectbox.val() : this.input.val()) + '</em></strong>.<br /><br />Please make sure building or department names are spelled correctly.</p></div>');
 			} else {
 				// Loop through the results and generate the result HTML.			
 				resultsPagesHTML += '<ul id="results-page-1" class="page active">';				
-				for (; i < this.searchResults.length; i++) {		
+				for (var i = 0; i < this.searchResults.length; i++) {		
 					var tempPage = Math.floor(i/this.searchOpts.pageSize)+1,
 						label = i % this.searchOpts.pageSize;
 					
@@ -301,7 +330,7 @@ $(function(){
 						resultsPagesHTML += '</ul><ul id="results-page-'+this.searchOpts.curPage+'" class="page">';						
 					}
 					
-					resultsPagesHTML += this.resultsTemplate({id: i, label: label, marker: this.searchResults[i].toJSON()});
+					resultsPagesHTML += this.resultsTemplate({id: this.searchResults[i].id, label: label, marker: this.searchResults[i].toJSON()});
 				}				
 				resultsPagesHTML += '</ul>';
 				
@@ -319,11 +348,7 @@ $(function(){
 				
 				$('#map-results li').on('click','a',function(){		
 					var result = self.collection.get(this.id.replace('result-',''));
-					
-					// Make sure the marker is on the map first.
-					if (result.get('gMarker').getMap() !== null) {					
-						result.set({showInfowindow: true});
-					}
+					result.set({showInfowindow: true});
 					
 					return false;
 				});
@@ -335,21 +360,16 @@ $(function(){
 				// Hide the overlays options content.
 				$('#map-overlays').css({display: 'none'});
 							
-				// Reset the results collection and add the initial set.
-				this.collection.removeAll();
+				// Reset the shown markers and add the new set.
+				this.collection.removeShownMarkers();
 				for (var i = 0; i < (this.searchOpts.pageSize <= this.searchResults.length ? this.searchOpts.pageSize : this.searchResults.length); i++) {
-					var result = this.searchResults[i].toJSON();
-					result.id = i;
-					result.showOnMap = true;
-					result.label = i % this.searchOpts.pageSize;
-				
-					// Add to the results collection.
-					// This will also trigger the MapView to refresh.
-					this.collection.add(result);
-				}
-				
-				if (this.collection.length === 1) {
-					this.collection.get(0).set({showInfowindow: true});
+					var result = this.collection.get(this.searchResults[i].id);
+					
+					result.set({
+						showOnMap: true,
+						showInfowindow: this.searchResults.length === 1 ? true : false,
+						label: i % this.searchOpts.pageSize
+					});
 				}
 				
 				// Show the results.
@@ -383,16 +403,14 @@ $(function(){
 					}));
 					
 					// Reset the map and add the next set of Markers.
-					self.collection.removeAll();		
+					self.collection.removeShownMarkers();		
 					for (var i = lowerBound; i < upperBound; i++) {
-						var result = self.searchResults[i].toJSON();
-						result.id = i;
-						result.showOnMap = true;
-						result.label = i % self.searchOpts.pageSize;
-					
-						// Add to the results collection.
-						// This will also trigger the MapView to refresh.
-						self.collection.add(result);
+						var result = self.collection.get(self.searchResults[i].id);
+						result.set({
+							showOnMap: true,
+							showInfowindow: upperBound === lowerBound ? true : false,
+							label: i % self.searchOpts.pageSize
+						});
 					}
 					
 					return false;
@@ -402,7 +420,7 @@ $(function(){
 		
 		// Search the Locations Collection by keyword.
 		searchByKeyword: function() {
-			this.searchResults = Locations.searchByQuery(this.input.val());
+			this.searchResults = this.collection.searchByQuery(this.input.val());
 			this.selectbox[0].selectedIndex = 0;			
 			this.updateResults();
 			
@@ -411,7 +429,7 @@ $(function(){
 		
 		// Search the Locations Collection by building selectbox.
 		searchByBuilding: function() {
-			this.searchResults = Locations.searchById(this.selectbox.val());
+			this.searchResults = this.collection.searchById(this.selectbox.val());
 			this.input.val('"'+this.selectbox[0].options[this.selectbox[0].selectedIndex].text+'"');
 			this.updateResults();	
 
@@ -424,7 +442,7 @@ $(function(){
 			
 			// Loop through the IDs and load the specified markers.
 			for (; i < this.deeplinksIds.length; i++) {
-				var model = Locations.get(this.deeplinksIds[i]);
+				var model = this.collection.get(this.deeplinksIds[i]);
 				
 				if (model !== undefined) {
 					this.searchResults.push(model);
@@ -445,7 +463,7 @@ $(function(){
 			
 			this.searchResults = [];
 			
-			this.collection.removeAll();
+			this.collection.removeShownMarkers();
 			
 			return false;
 		},
@@ -521,6 +539,10 @@ $(function(){
 	// ---------------
 	
 	window.AppView = Backbone.View.extend({
+		Collections: {
+			Locations: {}
+		},
+		
 		Views: {
 			Panel: {},
 			CampusMap: {}
@@ -537,12 +559,13 @@ $(function(){
 			var query = this.getQueryString('query'),
 				deeplinksIds = this.getQueryString('id');
 			
-			// Fetch the locations data.
-			Locations.fetch();
+			// Initialize the Locations collection and fetch the data.
+			this.Collections.Locations = new LocationCollection;
+			this.Collections.Locations.fetch();
 			
 			// Initialize the two UI views.
-			this.Views.CampusMap = new MapView;
-			this.Views.Panel = new PanelView;			 				
+			this.Views.CampusMap = new MapView({collection: this.Collections.Locations});			
+			this.Views.Panel = new PanelView({collection: this.Collections.Locations});			 				
 			
 			// If there is a predefined query or marker ID's (via GET request), prefill the search input
 			// and load search for results.
