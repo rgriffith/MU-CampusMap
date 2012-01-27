@@ -19,7 +19,7 @@ $(function(){
 							icon: 'http://maps.google.com/mapfiles/marker' + String.fromCharCode(attributes.label + 65) + '.png'
 						});		
 			
-			// Update the result's marker attribute.
+			// Update the location's marker attribute with the new google marker.
 			this.set({marker: marker});
 		}
 	});
@@ -29,9 +29,17 @@ $(function(){
 		url: "ajax/markercache.json",
 		
 		initialize: function() {
+			// Bind a change event to the label because the marker's icon
+			// will change according to its location in the search results.
 			this.bind('change:label', this.updateMarkerIcon);
 		},
 		
+		// Filter the collection by a supplied query.
+		// If the query begins with a double quoute, we're
+		// performing a greedy match on the marker's nam.
+		// Otherwise, we're searching for the query/keywords
+		// within the name, address, depertments, and id.
+		// ---------------
 		searchByQuery: function(query) {
 			var keywords = query.split(' ');
 			
@@ -58,18 +66,24 @@ $(function(){
 			}
 		},
 		
+		// Filter the collection by the location's unique id.
+		// ---------------
 		searchById: function(locId) {
 			return this.filter(function(loc) {
 				return parseInt(loc.get('id')) === parseInt(locId);
 			});
 		},
 		
+		// Filter the collection by those that have markers that are shown on a google map.
+		// ---------------
 		getShownMarkers: function() {
 			return this.filter(function(location){ 
 					return location.get('marker').getMap() !== null;
 				});
 		},
 		
+		// Remove all location markers from a google map.
+		// ---------------
 		removeShownMarkers: function() {
 			var shown = this.getShownMarkers();
 			
@@ -86,6 +100,8 @@ $(function(){
 			}
 		},
 		
+		// Update a location marker's icon url.
+		// ---------------
 		updateMarkerIcon: function(location) {
 			var marker = location.get('marker'),
 				label = location.get('label');
@@ -110,6 +126,7 @@ $(function(){
 		infowindow: null,
 		
 		// Initialize the Google map.
+		// ---------------
 		initialize: function() {
 			var self = this,
 				baseKmlUrl = 'http://www.millersville.edu/directions/kml/mobile/marker-dump.kml?v=' + this.kmlVersion;
@@ -168,11 +185,13 @@ $(function(){
 		},		
 		
 		// Trigger a resize on the map, useful for "refreshing" the bounds.
+		// ---------------
 		resizeMap: function() {
 			google.maps.event.trigger(this.map, 'resize'); 
 		},
 		
 		// Add the marker to the map and create its click event listener.
+		// ---------------
 		addMarker: function(result) {
 			var self = this,
 				attributes = result.toJSON(),
@@ -193,14 +212,8 @@ $(function(){
 			});
 		},
 		
-		updateMarkerIcon: function(result) {
-			var marker = result.get('marker'),
-				label = result.get('label');
-			
-			marker.setIcon('http://maps.google.com/mapfiles/marker' + String.fromCharCode(label + 65) + '.png');
-		},
-		
 		// Open a given marker's infowindow.
+		// ---------------
 		openMarkerInfowindow: function(result) {
 			var marker = result.get('marker');
 			
@@ -210,13 +223,15 @@ $(function(){
 			}
 		},
 		
-		// Set the active infowindow.
+		// Set the active infowindow, we only want one at a time.
+		// ---------------
 		setInfoWindow: function(iw) {		
 			if (this.infowindow !== null) { this.infowindow.close(); }
 			this.infowindow = iw;
 		},
 		
-		// Show a given KML layer. Add if it non-existent.
+		// Show a given KML layer on the map. Add to lookup if it non-existent.
+		// ---------------
 		showKmlLayer: function(layerId, kmlOptions) {
 			// If the layer doesn't exist yet, create one.		
 			if (this.layers.kml[layerId] === undefined) { 
@@ -226,11 +241,11 @@ $(function(){
 				});
 			}
 			
-			// Show the KML layer.
 			this.layers.kml[layerId].setMap(this.map);
 		},
 		
 		// Remove a KML layer from the map.
+		// ---------------
 		removeKmlLayer: function(layerId) {
 			this.layers.kml[layerId].setMap(null);
 		}
@@ -309,7 +324,45 @@ $(function(){
 			});	
 		},
 		
+		// Search the Locations Collection by keyword.
+		// ---------------
+		searchByKeyword: function() {
+			this.searchResults = this.collection.searchByQuery(this.input.val());
+			this.selectbox[0].selectedIndex = 0;			
+			this.updateResults();
+			
+			return false;
+		},
+		
+		// Search the Locations Collection by building selectbox.
+		// ---------------
+		searchByBuilding: function() {
+			this.searchResults = this.collection.searchById(this.selectbox.val());
+			this.input.val('"'+this.selectbox[0].options[this.selectbox[0].selectedIndex].text+'"');
+			this.updateResults();	
+
+			return false;		
+		},
+		
+		// Search the Locations Collection by IDs provided via GET request (CSV format).
+		// ---------------
+		searchByIDs: function() {
+			var i = 0;
+			
+			// Loop through the IDs and load the specified markers.
+			for (; i < this.deeplinksIds.length; i++) {
+				var model = this.collection.get(this.deeplinksIds[i]);
+				
+				if (model !== undefined) {
+					this.searchResults.push(model);
+				}
+			}
+			
+			this.updateResults();	
+		},
+		
 		// Update the search results, based on searching the Locations Collection.
+		// ---------------
 		updateResults: function() {
 			var self = this,
 				totalPages = Math.ceil(this.searchResults.length / this.searchOpts.pageSize),
@@ -418,41 +471,8 @@ $(function(){
 			}
 		},
 		
-		// Search the Locations Collection by keyword.
-		searchByKeyword: function() {
-			this.searchResults = this.collection.searchByQuery(this.input.val());
-			this.selectbox[0].selectedIndex = 0;			
-			this.updateResults();
-			
-			return false;
-		},
-		
-		// Search the Locations Collection by building selectbox.
-		searchByBuilding: function() {
-			this.searchResults = this.collection.searchById(this.selectbox.val());
-			this.input.val('"'+this.selectbox[0].options[this.selectbox[0].selectedIndex].text+'"');
-			this.updateResults();	
-
-			return false;		
-		},
-		
-		// Search the Locations Collection by IDs provided via GET request (CSV format).
-		searchByIDs: function() {
-			var i = 0;
-			
-			// Loop through the IDs and load the specified markers.
-			for (; i < this.deeplinksIds.length; i++) {
-				var model = this.collection.get(this.deeplinksIds[i]);
-				
-				if (model !== undefined) {
-					this.searchResults.push(model);
-				}
-			}
-			
-			this.updateResults();	
-		},
-		
-		// Clear the search results.
+		// Clear the search results and remove any shown markers.
+		// ---------------
 		clearResults: function() {			
 			$('#map-results-pagination, #map-results-feedback, #map-results').html('');	
 			$('#map-results-wrap, .kwsearch-clear').css({display:'none'});
@@ -469,6 +489,7 @@ $(function(){
 		},
 		
 		// Update the search results pagination.
+		// ---------------
 		renderPagination: function(opts) {
 			var currentPage = opts.currentPage <= 1 ? 1 : parseInt(opts.currentPage),
 				anchorSize = 2,
@@ -584,6 +605,7 @@ $(function(){
 		},
 		
 		// Show/Hide the features panel.
+		// ---------------
 		togglePanelDisplay: function() {
 			var self = this,
 				offset = this.Views.Panel.$('#features-panel').offset();
@@ -614,12 +636,13 @@ $(function(){
 		},
 		
 		// Returns the value for a given GET variable.
+		// ---------------
 		getQueryString: function(a) {
 			return (a = location.search.match(new RegExp("[?&]" + a + "=([^&]*)(&?)", "i"))) ? a[1] : a;
 		}
 	});
 	
 	
-	// Create the "app"
+	// Create the "App"
 	window.App = new AppView;
 });
