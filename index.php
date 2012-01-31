@@ -167,8 +167,8 @@
 
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-<script src="//documentcloud.github.com/underscore/underscore-min.js"></script>
-<script src="//documentcloud.github.com/backbone/backbone-min.js"></script> 
+<script src="js/underscore.1.3.1-min.js"></script>
+<script src="js/backbone.0.5.3-min.js"></script> 
 
 <script src="//maps.google.com/maps/api/js?sensor=true" type="text/javascript"></script>
 <script src="js/main.js"></script> 

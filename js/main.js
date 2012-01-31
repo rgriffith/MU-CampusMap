@@ -271,7 +271,7 @@ $(function(){
 		
 		// Delegated events for creating new items, and clearing completed ones.
 		events: {
-			"click span.kwsearch-clear": "clearResults",			
+			"click span.kwsearch-clear": "clearResults",	
 			"submit form#marker-search": "searchByKeyword",
 			"change select#bldgsearch-select": "searchByBuilding"
 		},
@@ -363,16 +363,25 @@ $(function(){
 		
 		// Update the search results, based on searching the Locations Collection.
 		// ---------------
-		updateResults: function() {
+		updateResults: function(page) {	
+			// Make sure we have a valid starting point.
+			if (typeof page !== 'number' || page <= 0 || page > totalPages) {
+				page = 1;
+			}
+									
 			var self = this,
 				totalPages = Math.ceil(this.searchResults.length / this.searchOpts.pageSize),
-				resultsPagesHTML = '';
+				resultsPagesHTML = '',
+				currentLowerBound = (page - 1) * this.searchOpts.pageSize,
+				currentUpperBound = currentLowerBound + this.searchOpts.pageSize;	
+			
+			currentUpperBound = (currentUpperBound <= this.searchResults.length ? currentUpperBound : this.searchResults.length)
 			
 			if (this.searchResults.length < 1) {
 				$('#map-results').html('<div class="alert-message block-message warning"><p>No results were found for <strong><em>' + (this.selectbox.val() !== '' ? this.selectbox.val() : this.input.val()) + '</em></strong>.<br /><br />Please make sure building or department names are spelled correctly.</p></div>');
 			} else {
 				// Loop through the results and generate the result HTML.			
-				resultsPagesHTML += '<ul id="results-page-1" class="page active">';				
+				resultsPagesHTML = '<ul id="results-page-1" class="page' + (page === 1 ? ' active' : '') + '">';				
 				for (var i = 0; i < this.searchResults.length; i++) {		
 					var tempPage = Math.floor(i/this.searchOpts.pageSize)+1,
 						label = i % this.searchOpts.pageSize;
@@ -380,7 +389,7 @@ $(function(){
 					// Append to the results HTML.
 					if (tempPage > this.searchOpts.curPage) {
 						this.searchOpts.curPage = tempPage;
-						resultsPagesHTML += '</ul><ul id="results-page-'+this.searchOpts.curPage+'" class="page">';						
+						resultsPagesHTML += '</ul><ul id="results-page-'+this.searchOpts.curPage+'" class="page' + (page === this.searchOpts.curPage ? ' active' : '') + '">';						
 					}
 					
 					resultsPagesHTML += this.resultsTemplate({id: this.searchResults[i].id, label: label, marker: this.searchResults[i].toJSON()});
@@ -389,8 +398,8 @@ $(function(){
 				
 				// Update the viewing stats.
 				$('#map-results-stats').html(this.statsTemplate({
-					lowerBound: 0,
-					upperBound: this.searchOpts.pageSize,
+					lowerBound: currentLowerBound,
+					upperBound: currentUpperBound,
 					resultCount: this.searchResults.length,
 					query: this.input.val()
 				}));
@@ -408,14 +417,14 @@ $(function(){
 				
 				// Add the pagination HTML and add a click event to each pagination link.
 				// Each link will "show" a corresponding page.
-				$('#map-results-pagination').html(this.renderPagination({totalPages: totalPages, currentPage: 1}));
+				$('#map-results-pagination').html(this.renderPagination({totalPages: totalPages, currentPage: page}));
 				
 				// Hide the overlays options content.
 				$('#map-overlays').css({display: 'none'});
 							
 				// Reset the shown markers and add the new set.
 				this.collection.removeShownMarkers();
-				for (var i = 0; i < (this.searchOpts.pageSize <= this.searchResults.length ? this.searchOpts.pageSize : this.searchResults.length); i++) {
+				for (var i = currentLowerBound; i < currentUpperBound; i++) {
 					var result = this.collection.get(this.searchResults[i].id);
 					
 					result.set({
@@ -429,8 +438,12 @@ $(function(){
 				$('#map-results-wrap').css({display: 'block'});				
 				
 				// Add a click event to the pagination links.
-				$('#map-results-pagination').on('click' ,'a', function() {				
+				$('#map-results-pagination').on('click' ,'a', function() {												
 					var pageClicked = parseInt($(this).text());
+					
+					if (isNaN(pageClicked)) {
+						return false;
+					}
 				
 					// Reset the active page and pagination link.
 					$('.active', $('#map-results')).removeClass('active');		    	
@@ -500,7 +513,7 @@ $(function(){
 					if (i == currentPage) {
 					    html += '<li class="active"><a href="#">'+i+'</a></li>';
 					} else {
-					    html += '<li><a href="#">'+i+'</a></li>';
+					    html += '<li><a href="#/search/' + this.input.val() + '/p' + i + '">'+i+'</a></li>';
 					}
 				}
 			} else {
@@ -554,6 +567,11 @@ $(function(){
 	});
 	
 	
+	// The Application's Router
+	// ----------
+	window.AppRouter = Backbone.Router.extend();
+	
+	
 	// The full Campus Map UI
 	// Includes search results, overlay tabs, and map canvas.
 	// Handles any initial GET requests (via ?query=george or ?id=1,2)
@@ -568,17 +586,20 @@ $(function(){
 			Panel: {},
 			CampusMap: {}
 		},
+		
+		Router: {},
 	
 		el: $("#campusmap-ui"),
 		
 		// Delegated events for creating new items, and clearing completed ones.
 		events: {
-			"click a#map-options-toggler": "togglePanelDisplay",
+			"click a#map-options-toggler": "togglePanelDisplay"
 		},
 		
 		initialize: function() {
-			var query = this.getQueryString('query'),
-				deeplinksIds = this.getQueryString('id');
+			var self = this,
+				query = this.getQueryString('query'),
+				deeplinksIds = this.getQueryString('id');				
 			
 			// Initialize the Locations collection and fetch the data.
 			this.Collections.Locations = new LocationCollection;
@@ -586,12 +607,66 @@ $(function(){
 			
 			// Initialize the two UI views.
 			this.Views.CampusMap = new MapView({collection: this.Collections.Locations});			
-			this.Views.Panel = new PanelView({collection: this.Collections.Locations});			 				
+			this.Views.Panel = new PanelView({collection: this.Collections.Locations});	
 			
+			this.Router = new AppRouter;	
+			
+			var searchLocations = function(query, page) {				
+				page = parseFloat(page) || 1;			
+				query = unescape(query.replace('+', ' '));	
+				
+				_.defer(function() {
+					console.log('Search for: ' + query + '; Page: ' + page);
+					
+					self.Views.Panel.input.val(query);
+					
+					self.Views.Panel.searchResults = self.Views.Panel.collection.searchByQuery(query);
+					self.Views.Panel.selectbox[0].selectedIndex = 0;			
+					self.Views.Panel.updateResults(page);
+				});
+			};
+			
+			this.Router.route("/search/:query", "search", searchLocations);
+			this.Router.route("/search/:query/p:page", "search", searchLocations);
+			
+			this.Router.route("/locations/:ids", "locations", function(ids) {
+				console.log('Search for: ' + ids);
+				self.Views.Panel.deeplinksIds = ids.split(',');
+				var t = setTimeout('App.Views.Panel.searchByIDs()', 100);
+			});
+			
+			Backbone.history.start();
+			
+			// All navigation that is relative should be passed through the navigate
+			// method, to be processed by the router.  If the link has a data-bypass
+			// attribute, bypass the delegation completely.
+			$(document).on("click", "a:has([data-route])", function(evt) {
+				
+				console.log(this.protocol);
+			
+				// Get the anchor href and protcol
+				var href = $(this).attr("href");
+				var protocol = this.protocol + "//";
+				
+				// Ensure the protocol is not part of URL, meaning its relative.
+				if (href && href.slice(0, protocol.length) !== protocol) {
+					// Stop the default event to ensure the link will not cause a page
+					// refresh.
+					evt.preventDefault();
+					
+					// This uses the default router defined above, and not any routers
+					// that may be placed in modules.  To have this work globally (at the
+					// cost of losing all route events) you can change the following line
+					// to: Backbone.history.navigate(href, true);
+					app.router.navigate(href, true);
+				}
+			});
+			
+
 			// If there is a predefined query or marker ID's (via GET request), prefill the search input
 			// and load search for results.
 			// Else, just show the overlays options.
-			if (typeof query === 'string' && query !== null) {
+		/*	if (typeof query === 'string' && query !== null) {
 				this.Views.Panel.input.val(unescape(query.replace('+', ' ')));
 				
 				// A slight timeout is needed to allow enough time for the Locations to load.
@@ -601,7 +676,25 @@ $(function(){
 				
 				// A slight timeout is needed to allow enough time for the Locations to load.
 				var t = setTimeout('window.App.Views.Panel.searchByIDs()', 100);
-			}
+			}*/
+		},
+		
+		searchLocations: function(query, page) {
+			var self = this;
+			
+			page = page || 0;			
+			query = unescape(query.replace('+', ' '));
+
+			
+			_.defer(function() {
+				console.log('Search for: ' + query);
+				
+				self.Views.Panel.input.val(query);
+				
+				self.Views.Panel.searchResults = self.Views.Panel.collection.searchByQuery(query);
+				self.Views.Panel.selectbox[0].selectedIndex = 0;			
+				self.Views.Panel.updateResults();
+			});
 		},
 		
 		// Show/Hide the features panel.
@@ -645,4 +738,5 @@ $(function(){
 	
 	// Create the "App"
 	window.App = new AppView;
+
 });
