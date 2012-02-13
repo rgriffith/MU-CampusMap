@@ -389,6 +389,12 @@ $(function(){
 			
 			currentUpperBound = (currentUpperBound <= this.searchResults.length ? currentUpperBound : this.searchResults.length)
 			
+			// Hide the overlays options content.
+			$('#map-overlays').css({display: 'none'});
+			
+			// Show the clear icon.
+			$('.kwsearch-clear').css({display:'block'});
+			
 			if (this.searchResults.length < 1) {
 				$('#map-results').html('<div class="alert-message block-message warning"><p>No results were found for <strong><em>' + (this.selectbox.val() !== '' ? this.selectbox.val() : this.input.val()) + '</em></strong>.<br /><br />Please make sure building or department names are spelled correctly.</p></div>');
 			} else {
@@ -411,9 +417,7 @@ $(function(){
 					query: this.input.val()
 				}));
 				
-				$('#map-results').html(resultsPagesHTML);
-				
-				$('.kwsearch-clear').css({display:'block'});
+				$('#map-results').html(resultsPagesHTML);				
 				
 				$('#map-results li').on('click','a',function(){		
 					var result = self.collection.get(this.id.replace('result-',''));
@@ -425,9 +429,6 @@ $(function(){
 				// Add the pagination HTML and add a click event to each pagination link.
 				// Each link will "show" a corresponding page.
 				$('#map-results-pagination').html(this.renderPagination());
-				
-				// Hide the overlays options content.
-				$('#map-overlays').css({display: 'none'});
 							
 				// Reset the shown markers and add the new set.
 				this.collection.removeShownMarkers();
@@ -439,11 +440,11 @@ $(function(){
 						showInfowindow: this.searchResults.length === 1 ? true : false,
 						label: i % this.searchOpts.pageSize
 					});
-				}
-				
-				// Show the results.
-				$('#map-results-wrap').css({display: 'block'});				
+				}							
 			}
+			
+			// Show the results.
+			$('#map-results-wrap').css({display: 'block'});	
 		},
 		
 		clearResults: function() {
@@ -571,7 +572,7 @@ $(function(){
 			var searchLocations = function(query, page) {				
 				page = parseFloat(page) || 1;			
 				query = unescape(query.replace('+', ' '));	
-				
+
 				if (query !== '') {
 					_.defer(function() {					
 						// Update the route URL so the pagination links are up to date.
@@ -639,7 +640,7 @@ $(function(){
 		// Returns the "route" URL, or the hash created by the Backbone Router.
 		// ---------------
 		getRouteUrl: function() {
-			var routeUrl = location.hash.match(/^#([a-z0-9,%-]*\/?){2}/)[0];							
+			var routeUrl = location.hash !== '' ? location.hash.match(/^#([a-z0-9,%-]*\/?){2}/)[0] : '#';
 			return routeUrl.charAt(routeUrl.length - 1) !== '/' ? routeUrl + '/' : routeUrl;
 		},
 		
