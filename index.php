@@ -39,8 +39,8 @@
 					<form action="" id="marker-search" method="get">
 						<fieldset id="kwsearch">
 							<input id="kwsearch-keyword" name="query" type="text" placeholder="Search Campus Map"/> 
-							<input id="kwsearch-submit" name="search" type="submit" value="Search" />
-							<span class="kwsearch-clear" title="Clear the current search">Clear Search</span>		
+							<button id="kwsearch-submit" name="search" type="submit" title="Perform Search"><i class="icon-search icon-white">Search</i></button>
+							<a title="Clear Search" class="close kwsearch-clear">&times;</a>	
 						</fieldset>
 						<fieldset id="bldgsearch"> 
 							<?php			
@@ -80,7 +80,7 @@
 									</select>
 								</div>
 							</div>			
-							<span class="kwsearch-clear" title="Clear the current search">Clear Search</span>		
+							<a title="Clear Search" class="close kwsearch-clear">&times;</a>	
 						</fieldset>		
 					</form>
 				
@@ -96,47 +96,47 @@
 						<ul class="inputs-list">			
 					 		<li class="filter-heading">Buildings</li>
 					 		
-							<li><label for="baseLayer">
+							<li><label for="baseLayer" class="checkbox">
 								<input type="checkbox" name="baseLayer" class="filter-checkbox" id="baseLayer" checked="checked" value="marker-dump" />
 									All Buildings</label></li>
 					
-							<li><label for="academicsLayer">
+							<li><label for="academicsLayer" class="checkbox">
 								<input type="checkbox" name="academicsLayer" class="filter-checkbox" id="academicsLayer" value="academic-buildings" />
 									<span class="filter-icon filter-icon-academics"></span>Academic Buildings</label></li>
 					
-							<li><label for="administrativeLayer">
+							<li><label for="administrativeLayer" class="checkbox">
 								<input type="checkbox" name="administrativeLayer" class="filter-checkbox" id="administrativeLayer" value="administrative-buildings" />
 									<span class="filter-icon filter-icon-administrative"></span>Administrative Buildings</label></li>
 							
-							<li><label for="dormLayer">
+							<li><label for="dormLayer" class="checkbox">
 								<input type="checkbox" name="dormLayer" class="filter-checkbox" id="dormLayer" value="dorm-buildings" />
 									<span class="filter-icon filter-icon-housing"></span>Student Housing</label></li>
 							
 							<li class="filter-heading">Services</li>
 							
-							<li><label for="emergencycallboxesLayer">
+							<li><label for="emergencycallboxesLayer" class="checkbox">
 								<input type="checkbox" name="emergencycallboxesLayer" class="filter-checkbox" id="emergencycallboxesLayer" value="mu-emergencycallboxes" />
 									<span class="filter-icon service-icon"><img src="http://www.millersville.edu/directions/img/icons/callbox.png" alt="" /></span>Emergency Callboxes
 								</label></li>
 							
-							<li><label for="muparkingLayer">
+							<li><label for="muparkingLayer" class="checkbox">
 								<input type="checkbox" name="muparkingLayer" class="filter-checkbox" id="muparkingLayer" value="mu-parkinglots" />
 									<span class="filter-icon service-icon"><img src="http://www.millersville.edu/directions/img/icons/parking.png" alt="" /></span>Parking Lots
 								</label></li>
 							
 							<li class="filter-heading">Shuttle Routes</li>
 							
-							<li><label for="mushuttleLayer">
+							<li><label for="mushuttleLayer" class="checkbox">
 								<input type="checkbox" name="mushuttleLayer" class="filter-checkbox" id="mushuttleLayer" value="mu-shuttlebus" />
 									<span class="filter-icon route-icon"><img src="http://chart.apis.google.com/chart?chs=12x12&cht=ls&chco=FF69BB&chd=s:A9&chls=2" alt="" /></span>MU Campus Shuttle
 								</label></li>
 								
-							<li><label for="route16">
+							<li><label for="route16" class="checkbox">
 								<input type="checkbox" name="route16" class="filter-checkbox" id="route16" value="route-16" />
 									<span class="filter-icon route-icon"><img src="http://chart.apis.google.com/chart?chs=12x12&cht=ls&chco=ff694e&chd=s:A9&chls=2" alt="" /></span>MU-Lancaster Route 16
 								</label></li>
 								
-							<li><label for="parkcity">
+							<li><label for="parkcity" class="checkbox">
 								<input type="checkbox" name="parkcity" class="filter-checkbox" id="parkcity" value="park-city-xpress" />
 									<span class="filter-icon route-icon"><img src="http://chart.apis.google.com/chart?chs=12x12&cht=ls&chco=5577bb&chd=s:A9&chls=2" alt="" /></span>MU Park City Xpress
 								</label></li>

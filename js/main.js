@@ -396,7 +396,7 @@ $(function(){
 			$('.kwsearch-clear').css({display:'block'});
 			
 			if (this.searchResults.length < 1) {
-				$('#map-results').html('<div class="alert-message block-message warning"><p>No results were found for <strong><em>' + (this.selectbox.val() !== '' ? this.selectbox.val() : this.input.val()) + '</em></strong>.<br /><br />Please make sure building or department names are spelled correctly.</p></div>');
+				$('#map-results').html('<div class="alert alert-block"><p>No results were found for <strong><em>' + (this.selectbox.val() !== '' ? this.selectbox.val() : this.input.val()) + '</em></strong>.<br /><br />Please make sure building or department names are spelled correctly.</p></div>');
 			} else {
 				// Loop through the results and generate the result HTML.			
 				resultsPagesHTML = '<ul id="results-page-' + page + '" class="page active">';	
@@ -540,7 +540,7 @@ $(function(){
 		events: {
 			"click a#map-options-toggler": "togglePanelDisplay",
 			"click #map-results-pagination a": "paginate",
-			"click span.kwsearch-clear": "clearResults",
+			"click a.kwsearch-clear": "clearResults",
 			"submit form#marker-search": "searchByKeyword",
 			"change select#bldgsearch-select": "searchByBuilding"
 		},
@@ -574,13 +574,13 @@ $(function(){
 				query = unescape(query.replace('+', ' '));	
 
 				if (query !== '') {
-					_.defer(function() {					
+					_.delay(function() {					
 						// Update the route URL so the pagination links are up to date.
 						self.Views.Panel.routeUrl = self.getRouteUrl();
 						
 						// Search and update results.
 						self.Views.Panel.searchByKeyword(query, page);
-					});
+					}, 100);
 				} else {
 					self.clearResults();
 				}
@@ -599,13 +599,13 @@ $(function(){
 			this.Router.route("locations/:ids", "locations", function(ids) {				
 				ids = ids.split(',')
 				
-				_.defer(function() {
+				_.delay(function() {
 					// Update the route URL so the pagination links are up to date.
 					self.Views.Panel.routeUrl = self.getRouteUrl();
 					
 					// Search and update results.
 					self.Views.Panel.searchByIDs(ids);
-				});
+				}, 100);
 			});
 			
 			Backbone.history.start();
