@@ -65,6 +65,7 @@
 					'image' => '',
 					'infoWindow' => array(
 						'directionsUrl' => 'http://maps.google.com/maps?f=d&amp;source=s_d&amp;daddr='.$m->{'system-data-structure'}->marker->lat.','.$m->{'system-data-structure'}->marker->lng.'&amp;hl=en',
+						'shareUrl' => 'http://166.66.47.86/campusmap/#locations/'.$marker['id'],
 						'content' => ''
 					)
 				);	
@@ -84,7 +85,7 @@
 					<div><div style="overflow: hidden;">
 						<img src="'.$marker['image'].'" align="right" alt="Picture of '.$marker['name'].'" />
 						<p>'.$marker['address'].'<br/>Millersville, PA 17551</p>
-						<p><a href="'.$marker['infoWindow']['directionsUrl'].'" target="_blank">Get directions</a></p>
+						<p><a href="'.$marker['infoWindow']['directionsUrl'].'" target="_blank">Get directions</a> | <a href="'.$marker['infoWindow']['shareUrl'].'" target="_blank">Share</a></p>
 					</div></div></div>';
 				
 				// Append the new marker.
@@ -105,12 +106,13 @@
 						$tempMarker['id'] = count($markerData);
 						$tempMarker['name'] = $department['name'];
 						$tempMarker['address'] = $marker['name'].'<br/>'.$marker['address'];
+						$tempMarker['infoWindow']['shareUrl'] = 'http://166.66.47.86/campusmap/#locations/'.$tempMarker['id'];
 						$tempMarker['infoWindow']['content'] = '<div style="font-family: Arial,sans-serif; font-size: small; height:auto;width:380px;">
 							<div style="font-weight: bold; font-size: medium; margin-bottom: 0em;">'.$department['name'].'</div>
 							<div><div style="overflow: hidden;">
 								<img src="'.$marker['image'].'" align="right" alt="Picture of '.$marker['name'].'" />
 								<p>'.$marker['name'].'<br/>'.$marker['address'].'<br/>Millersville, PA 17551</p>
-								<p><a href="'.$marker['infoWindow']['directionsUrl'].'" target="_blank">Get directions</a>';
+								<p><a href="'.$marker['infoWindow']['directionsUrl'].'" target="_blank">Get directions</a> | <a href="'.$tempMarker['infoWindow']['shareUrl'].'" target="_blank">Share</a>';
 						
 						if (!empty($department['url'])) {
 							$tempMarker['infoWindow']['content'] .= ' | <a href="'.$department['url'].'" target="_blank">Visit website</a>';

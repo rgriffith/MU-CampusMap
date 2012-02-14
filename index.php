@@ -11,11 +11,15 @@
 <div id="header">
 	<a href="#" id="millersville-logo"><img src="http://www.millersville.edu/lib/v2/img/common/millersvilleCircleM-32.png" alt="Millersville University Home" /></a>
 	<h1 id="the-title">Campus Map</h1>
-	<form action="http://www.millersville.edu/searchresults.php" id="search-mu" method="get" name="search">
-		<fieldset> 
+	<form action="http://www.millersville.edu/searchresults.php" method="get" name="search" id="search-mu" class="form-inline">
+		<!--<fieldset> 
 			<input id="search-mu-keyword" name="query" type="text" value="Search web &amp; directory"/> 
 			<input alt="Search" id="search-mu-submit" name="search" src="http://www.millersville.edu/lib/v2/img/common/magnifyer.png" type="image"/> 						
-		</fieldset>
+		</fieldset>-->
+
+			<input class="span2" name="query" type="text" placeholder="Search web &amp directory"/> 
+			<button class="btn btn-primary" name="search" type="submit" title="Search"><i class="icon-search icon-white"></i></button>
+
 	</form>
 </div>
 
@@ -28,7 +32,8 @@
 			<a title="Close this sidebar" id="map-options-toggler" href="#">Close</a>
 			<a title="Show the Search Map tab" id="tablink-search" href="#kwsearch" class="tab-button left selected">Search</a>
 			<a title="Show the Building List tab" id="tablink-buildings" href="#bldgsearch" class="tab-button mid">Building List</a>			
-			<a title="Show the Map Options tab" id="tablink-mapoptions" href="#map-overlays" class="tab-button right">Overlays</a>
+			<a title="Show the Map Options tab" id="tablink-mapoptions" href="#map-overlays" class="tab-button mid">Overlays</a>
+			<a title="Link to this Map" id="tablink-link" href="#link" class="tab-button right"><i class="icon-share"></i></a>
 		</div>	
 		
 		<div id="features-panel">
@@ -37,9 +42,9 @@
 			
 				<div id="map-search" class="tabs-content">
 					<form action="" id="marker-search" method="get">
-						<fieldset id="kwsearch">
+						<fieldset id="kwsearch" class="form-inline">
 							<input id="kwsearch-keyword" name="query" type="text" placeholder="Search Campus Map"/> 
-							<button id="kwsearch-submit" name="search" type="submit" title="Perform Search"><i class="icon-search icon-white">Search</i></button>
+							<button id="kwsearch-submit" class="btn btn-primary" name="search" type="submit" title="Perform Search"><i class="icon-search icon-white"></i></button>
 							<a title="Clear Search" class="close kwsearch-clear">&times;</a>	
 						</fieldset>
 						<fieldset id="bldgsearch"> 
@@ -62,25 +67,22 @@
 							}
 							
 							?>
-							
-							<div class="clearfix">
-								<label for="bldgsearch-select">Select a building:</label>
-								<div class="input">
-									<select class="span4" id="bldgsearch-select" name="bldgsearch-select">
-										<option/>
-										<optgroup label="Academic Buildings">
-											<?php echo $acadBldgsHTML; ?>
-										</optgroup>
-										<optgroup label="Administrative Buildings">
-											<?php echo $adminBldgsHTML; ?>
-										</optgroup>
-										<optgroup label="Dorm Buildings">
-											<?php echo $dormBldgsHTML; ?>
-										</optgroup>
-									</select>
-								</div>
-							</div>			
-							<a title="Clear Search" class="close kwsearch-clear">&times;</a>	
+
+							<label for="bldgsearch-select">Select a building:</label>
+							<div class="input">
+								<select class="span4" id="bldgsearch-select" name="bldgsearch-select">
+									<option/>
+									<optgroup label="Academic Buildings">
+										<?php echo $acadBldgsHTML; ?>
+									</optgroup>
+									<optgroup label="Administrative Buildings">
+										<?php echo $adminBldgsHTML; ?>
+									</optgroup>
+									<optgroup label="Dorm Buildings">
+										<?php echo $dormBldgsHTML; ?>
+									</optgroup>
+								</select>
+							<a title="Clear Search" class="close kwsearch-clear">&times;</a>								
 						</fieldset>		
 					</form>
 				
@@ -143,7 +145,7 @@
 						</ul>
 					</fieldset>
 				</div>
-			
+				<div id="link" class="tabs-content"></div>
 			<div id="footer">
 				<p id="afs"><a href="http://www.millersville.edu">Millersville University</a>. All Rights Reserved.<br />A member of the Pennsylvania State System of Higher Education. &copy; <?=date('Y');?></p>
 			</div>
@@ -163,6 +165,16 @@
 		<span class="marker-result-label"><% print(String.fromCharCode(label + 65)); %></span>
 		<a id="result-<%= id %>" href="#"><%= marker.name %><span><%= marker.address %></span></a>
 	</li>
+</script>
+
+<script type="text/template" id="share-fields">
+	<h3>Share via URL</h3>
+	<p>Copy the link below to <strong>bookmark</strong> or share via <strong>e-mail</strong> or <strong>IM</strong>.</p>
+	<br />
+	<fieldset>
+		<label for="sharedlink" style="display:none">Map Link</label>
+			<textarea id="sharedlink" class="span3" readonly="readonly"><%= shareUrl %></textarea>
+	</fieldset>
 </script>
 
 

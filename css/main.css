@@ -38,10 +38,7 @@ img {
 		color: #fff;
 	}
 	
-#search-mu{height:22px;position:absolute;right:10px;top:10px;text-align:right;width:150px}
-#search-mu fieldset{background-color:#FFF;border:none;height:22px;width:100%;margin:0;padding:0}
-#search-mu #search-mu-keyword{background-color:transparent;border:none;color:#888;float:left;font-size:10px;line-height:20px;height:20px;width:132px;margin:0;padding:0 0 0 5px}
-#search-mu #search-mu-submit{border:none;-webkit-border-radius:0;-moz-border-radius:0;border-radius:0;height:22px;position:absolute;right:0;top:0;width:22px;margin:0;padding:0}
+#search-mu{position:absolute;right:10px;top:14px;}
 
 #footer {
 	margin-top: 20px;
@@ -101,7 +98,7 @@ img {
 	
 		.tab-button {
 		display:inline-block;
-		min-width:54px;
+		min-width:15px;
 		text-align:center;
 		border:1px solid #ddd;
 		color:#444;
@@ -170,8 +167,7 @@ img {
 	
 	.tabs{border:1px solid #999;border-top:none;width:100%;background:#fff}
 		.tabs-content{display:none;color:#505050;font:normal 14px Arial, sans-serif;}
-		.tabs-content a{color:#005f9b;text-decoration:none}
-		.tabs-content a:hover{color:#000}
+		.tabs-content a{text-decoration:none}
 	
 	#features-panel fieldset {
 		background-color: white;						
@@ -222,9 +218,6 @@ img {
 	    padding: 0 0 10px 5px;
 	    width: 72%;
 	}
-	#map-results .page li a:hover {
-	    text-decoration: none;
-	}
 	#map-results .page li a span {
 	    color: #B0B0B0;
 	    display: block;
@@ -255,19 +248,14 @@ img {
 		.kwsearch-clear {
 			display: none;
 			position: absolute;
-			bottom: 10px;
-			right: 62px;
+			top: 6px;
+			right: 92px;
 			height: 14px;
 			width: 14px;
 			cursor: pointer;
 			text-align: left;
 			xtext-indent: -999px;
-		}
-		
-			#bldgsearch .kwsearch-clear {
-				right: 25px;
-				bottom: 19px;
-			}
+		}	
 		
 		#features-panel form fieldset {
 			height: 20px;		
@@ -286,57 +274,22 @@ img {
 			
 				#bldgsearch label {
 					line-height: 24px;
-					position: absolute;
-					top: 0;
 					text-align: left;
+				}
+				
+				#bldgsearch .kwsearch-clear {
+					right: 25px;
+					top: 34px;
+				}
+				
+				#bldgsearch #bldgsearch-select {
+					width: 83%;
 				}
 		
 		#features-panel form .input {
 			margin-left: 0;
 		}
-		
-		#kwsearch-keyword,
-		#bldgsearch-select {
-			background-color: transparent;
-			border: 1px solid #eee;				
-			color: #888;
-			position: absolute;
-			bottom:0;
-			left: 0;
-			font-size: 12px;
-			line-height: 30px;
-			height: 30px;
-			width: 79%;
-		}
-		
-		#kwsearch-keyword {
-			margin: 0;
-			padding: 0 5px;
-		}
-		
-		#bldgsearch-select {
-			width: 83%;
-		}
-		
-		#kwsearch-submit {					
-			height: 32px;
-			width: 32px;
-			margin: 0 0 0 5px;
-			padding: 0;
-			position: absolute;
-			bottom: 0;
-			right: 0;
-			background-color: #337fb0;
-			border: none;
-			-webkit-border-radius: 0px;
-			-moz-border-radius: 0px;
-			border-radius: 0px;
-			font-size: 0; 
-			display:block; 
-			line-height: 0;
-		}
-		
-	
+			
 	#filter-map legend {
 		border: none;
 	}	

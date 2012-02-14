@@ -91,11 +91,11 @@ $(function(){
 				_.each(shown, function(location) {
 					var marker = location.get('marker');
 					
-					location.set({showOnMap: false});
+					location.set({showOnMap: false, showInfowindow: false});
 					
 					// Remove from map and remove click listener.
 					marker.setMap(null);
-					google.maps.event.clearListeners(marker, 'click');
+					google.maps.event.clearListeners(marker, 'click');					
 				});
 			}
 		},
@@ -141,7 +141,7 @@ $(function(){
 			
 			// Set up some bind events so we know when to manipulate the markers on the map.
 			this.collection.bind('change:showOnMap', this.addMarker, this);
-			this.collection.bind('change:showInfowindow', this.openMarkerInfowindow);
+			this.collection.bind('change:showInfowindow', this.openMarkerInfowindow, this);
 			
 			// Load the default "base" KML layer onto the map.		
 			this.layers.kml['baseLayer'] = new google.maps.KmlLayer(baseKmlUrl, {suppressInfoWindows: false, preserveViewport: true});
@@ -207,6 +207,10 @@ $(function(){
 					position: marker.getPosition()
 				});
 				
+				google.maps.event.addListener(infowindow, 'closeclick', function() {
+					result.set({showInfowindow: false});
+				});
+				
 				self.setInfoWindow(infowindow);
 				infowindow.open(self.map, marker);
 			});
@@ -220,6 +224,8 @@ $(function(){
 			// Make sure the marker is to be shown and that it's on the map first.
 			if (result.get('showInfowindow') === true && marker.getMap() !== null) {
 				google.maps.event.trigger(marker, 'click');
+			} else {
+				this.setInfoWindow(null);
 			}
 		},
 		
@@ -262,13 +268,16 @@ $(function(){
 		
 		statsTemplate: _.template($('#search-results-stats').html()),
 		resultsTemplate: _.template($('#search-results-item').html()),
-		
+		shareFieldsTemplate: _.template($('#share-fields').html()),	
+
 		searchResults: [],
 		searchOpts: {
 			curPage: 1,
 			totalPages: 1,
 			pageSize: 6		
 		},
+		
+		routeUrl: '',
 		
 		// Delegated events for creating new items, and clearing completed ones.
 		events: {
@@ -297,15 +306,22 @@ $(function(){
 				$(this).addClass("selected"); 
 				
 				$('fieldset', $('#marker-search')).hide();
+				$('#sharedlink').blur();
 				
 				switch (tab.id) {
 					case 'tablink-mapoptions':
-						$('#map-search').hide();
+						$('#map-search, #link').hide();
 						$("#map-overlays").show();
+						break;
+					case 'tablink-link':
+						$('#map-search, #map-overlays').hide();
+						$('#link').show();
+						$('#sharedlink').focus().select();
 						break;
 					case 'tablink-search':
 					case 'tablink-buildings':
 					default:
+						$("#link").hide();						
 						$('#map-search').show();						
 						$('fieldset'+$(this).attr('href'), $('#marker-search')).show();
 						
@@ -430,8 +446,7 @@ $(function(){
 				// Each link will "show" a corresponding page.
 				$('#map-results-pagination').html(this.renderPagination());
 							
-				// Reset the shown markers and add the new set.
-				this.collection.removeShownMarkers();
+				// Show the new range of markers.
 				for (var i = currentLowerBound; i < currentUpperBound; i++) {
 					var result = this.collection.get(this.searchResults[i].id);
 					
@@ -508,6 +523,10 @@ $(function(){
 		    html += '</ul>';
 		    
 		    return html;
+		},
+		
+		updateShareFields: function() {
+			$('#link').html(this.shareFieldsTemplate({shareUrl: location.href}));
 		}
 	});
 	
@@ -569,18 +588,26 @@ $(function(){
 			// Mainly used if the entrance is a deep link.
 			this.Views.Panel.routeUrl = this.getRouteUrl();
 			
+			// Update shared links.			
+			this.Views.Panel.updateShareFields();
+			
 			var searchLocations = function(query, page) {				
 				page = parseFloat(page) || 1;			
 				query = unescape(query.replace('+', ' '));	
 
 				if (query !== '') {
-					_.delay(function() {					
+					self.Collections.Locations.removeShownMarkers();
+
+					_.delay(function() {	
 						// Update the route URL so the pagination links are up to date.
 						self.Views.Panel.routeUrl = self.getRouteUrl();
 						
 						// Search and update results.
 						self.Views.Panel.searchByKeyword(query, page);
-					}, 100);
+						
+						// Update shared links.
+						self.Views.Panel.updateShareFields();
+					}, 300);
 				} else {
 					self.clearResults();
 				}
@@ -591,13 +618,17 @@ $(function(){
 				self.Collections.Locations.removeShownMarkers();
 				self.Views.Panel.routeUrl = '';
 				self.Views.Panel.clearResults();
+				
+				// Update shared links.
+				self.Views.Panel.updateShareFields();
 			});
 			
 			this.Router.route("search/:query", "search", searchLocations);
 			this.Router.route("search/:query/p:page", "search", searchLocations);
 			
 			this.Router.route("locations/:ids", "locations", function(ids) {				
-				ids = ids.split(',')
+				ids = ids.split(',');
+				self.Collections.Locations.removeShownMarkers();
 				
 				_.delay(function() {
 					// Update the route URL so the pagination links are up to date.
@@ -605,7 +636,10 @@ $(function(){
 					
 					// Search and update results.
 					self.Views.Panel.searchByIDs(ids);
-				}, 100);
+					
+					// Update shared links.
+					self.Views.Panel.updateShareFields();
+				}, 300);
 			});
 			
 			Backbone.history.start();
@@ -633,6 +667,9 @@ $(function(){
 			if (typeof page !== 'number' || isNaN(page)) {
 				page = 1;
 			}
+			
+			// Update shared links.			
+			this.Views.Panel.updateShareFields();			
 			
 			this.Views.Panel.updateResults(page);
 		},
