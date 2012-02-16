@@ -1,306 +1,57 @@
 /* 
 Bootstrap icons curtesy of Glyphicons (http://glyphicons.com/) 
 */
-@import url('bootstrap.min.css');
-
-html { height: 100%; overflow-y: hidden; }
-body { height: 100%; margin: 0px; padding: 0px }
-
-img {
-	max-width: none;
-}
-
-#header {
-	height: 55px;
-	width: 100%;
-	position: relative;
-	top: 0;
-	background-color: #000;	
-	border-bottom: 3px solid #c8970e;		
-}
-	#millersville-logo {
-		float: left;
-		margin: 10px 10px 10px 20px;
-		width: 32px;
-		border: none;
-	}
-		#millersville-logo img {
-			border: none;
-		}
-		
-	#the-title {
-		font-family: Georgia, "Times New Roman", serif;
-		float: left;
-		line-height: 53px;
-		margin: 0;
-		padding: 0;		
-		width: 50%;
-		color: #fff;
-	}
-	
-#search-mu{position:absolute;right:10px;top:14px;}
-
-#footer {
-	margin-top: 20px;
-	padding: 10px;
-	border-top: 1px solid #ddd;
-}
-	#afs {
-		color: #adadad;
-		font: normal 12px Arial, sans-serif;				
-	}
-
-#campusmap-ui {
-	height: 100%;
-}
-
-#map-canvas {
-	position:absolute; bottom: 0; left: 0; right: 0; top: 58px; margin-left: 340px;
-}
-
-	#map-canvas label {
-		float: right;
-		padding-top: 2px;
-		width: auto;
-		text-align: left;		
-	}
-
-#panel-wrapper {
-	height: 100%;
-}
-
-#features-panel {
-	width: 310px;			
-	height: 100%;
-	overflow: auto;	
-	padding: 10px 15px 0;
-	position: relative;
-	float: left;
-	z-index: 999;
-	background-color: #fff;
-	border-right: 1px solid #ddd;	
-}
-
-	#features-panel-content {
-		height: 760px;
-	}
-	
-	#options-nav-bar {
-	background-color: #fff;
-	border-right: 1px solid #ddd;	
-	border-bottom:1px solid #eee;
-	height:29px;
-	overflow:hidden;
-	position:relative;
-	width:310px;
-	padding:15px;
-	}
-	
-		.tab-button {
-		display:inline-block;
-		min-width:15px;
-		text-align:center;
-		border:1px solid #ddd;
-		color:#444;
-		font:bold 11px/27px Arial, sans-serif;
-		height:27px;
-		text-decoration:none;
-		-webkit-border-radius:2px;
-		-moz-border-radius:2px;
-		border-radius:2px;
-		-webkit-transition:all .218s;
-		-moz-transition:all .218s;
-		-o-transition:all .218s;
-		transition:all .218s;
-		background-color:#F5F5F5;
-		float:left;
-		position:relative;
-		z-index:1;
-		margin:0;
-		padding:0 12px;
-		}
-		
-			.tab-button:hover {
-			color:#333;
-			-webkit-transition:all 0;
-			-moz-transition:all 0;
-			-o-transition:all 0;
-			transition:all 0;
-			background-color:#f8f8f8;
-			-webkit-box-shadow:0 1px 1px rgba(0,0,0,0.1);
-			-moz-box-shadow:0 1px 1px rgba(0,0,0,0.1);
-			box-shadow:0 1px 1px rgba(0,0,0,0.1);
-			text-decoration:none;
-			border-color:#c6c6c6;
-			}
-			
-			.tab-button.selected {
-			background-color:#eee;
-			-webkit-box-shadow:inset 0 1px 2px rgba(0,0,0,0.1);
-			-moz-box-shadow:inset 0 1px 2px rgba(0,0,0,0.1);
-			box-shadow:inset 0 1px 2px rgba(0,0,0,0.1);
-			color:#333;
-			border-color:#ccc;
-			}
-			
-			.tab-button.left {
-			-webkit-border-radius:2px 0 0 2px;
-			-moz-border-radius:2px 0 0 2px;
-			border-radius:2px 0 0 2px;
-			}
-			
-			.tab-button.mid {
-			-webkit-border-radius:0;
-			-moz-border-radius:0;
-			border-radius:0;
-			margin-left:-1px;
-			}
-			
-			.tab-button.right {
-			margin-left:-1px;
-			-webkit-border-radius:0 2px 2px 0;
-			-moz-border-radius:0 2px 2px 0;
-			border-radius:0 2px 2px 0;
-			}
-		
-		#map-options-toggler{height:20px;width:20px;position:absolute;top:17px;right:15px;background:#fff url(../options-toggler.png) no-repeat 100% 4px;border:1px solid #fff;text-indent:-999px;border-width:1px 1px 1px 0}
-	
-	.tabs{border:1px solid #999;border-top:none;width:100%;background:#fff}
-		.tabs-content{display:none;color:#505050;font:normal 14px Arial, sans-serif;}
-		.tabs-content a{text-decoration:none}
-	
-	#features-panel fieldset {
-		background-color: white;						
-		border: none;				
-		margin: 0;
-		padding: 0;
-		width: 100%;
-	}
-	
-	#features-panel fieldset legend {
-		padding-bottom: 15px;
-	}
-	
-	#map-results-wrap {display: none; padding: 0 0 20px 0;}
-	#map-results .page {
-		display: none;
-		list-style: none;
-	    margin: 0;
-	    padding: 0;
-	    width: 100%;
-	}
-		#map-results .page.active {
-			display: block;
-		}
-	#map-results .page li {
-	    margin: 0;
-	    padding: 0;
-	    vertical-align: top;
-	}
-	#map-results .page li .marker-result-label {
-	    background-color: #f2f2f2;
-	    border: 1px solid #ddd;
-	    -webkit-border-radius:5px;
-	    -moz-border-radius:5px;
-	    border-radius: 5px;
-	    font-size: 125%;
-	    line-height: 14px;
-	    margin-top: 3px;
-	    padding: 5px 0;
-	    text-align: center;
-	    width: 10%;
-	    display: inline-block;
-	    vertical-align: top;
-	}
-	#map-results .page li a {
-	    display: inline-block;
-	    margin: 0;
-	    padding: 0 0 10px 5px;
-	    width: 72%;
-	}
-	#map-results .page li a span {
-	    color: #B0B0B0;
-	    display: block;
-	    font-size: 90%;
-	}
-			
-		.pagination a,
-		.pagination span {
-			float: left;
-			padding: 0 8px;
-			border-right: 1px solid #ddd;
-			line-height: 26px;
-		}
-		
-			.pagination li.disabled span {
-				background-color: transparent;
-				color: #bfbfbf;
-			}
-	
-	#features-panel form {
-		margin: 0;
-		padding-bottom: 20px;
-		position: relative;
-		text-align: left;
-		width: 99%;
-	}
-	
-		.kwsearch-clear {
-			display: none;
-			position: absolute;
-			top: 6px;
-			right: 92px;
-			height: 14px;
-			width: 14px;
-			cursor: pointer;
-			text-align: left;
-			xtext-indent: -999px;
-		}	
-		
-		#features-panel form fieldset {
-			height: 20px;		
-			padding-bottom: 20px;	
-			position: relative;
-		}
-		
-			#kwsearch {
-				display: block;
-			}
-		
-			#features-panel form fieldset#bldgsearch {
-				height: 45px;			
-				display: none;
-			}
-			
-				#bldgsearch label {
-					line-height: 24px;
-					text-align: left;
-				}
-				
-				#bldgsearch .kwsearch-clear {
-					right: 25px;
-					top: 34px;
-				}
-				
-				#bldgsearch #bldgsearch-select {
-					width: 83%;
-				}
-		
-		#features-panel form .input {
-			margin-left: 0;
-		}
-			
-	#filter-map legend {
-		border: none;
-	}	
-	#filter-map ul{list-style:none;margin:-15px 0 0;padding:0}
-		#filter-map ul li.filter-heading{color:#333;font:bold 12px Arial, sans-serif;text-transform:uppercase;margin:15px 0 5px}
-		#filter-map label{position:relative}
-			#filter-map label input{margin-right:24px}
-		.filter-icon{display:inline-block;height:10px;width:10px;margin-right:5px;position:absolute;top:4px;left:18px}
-		.filter-icon.filter-icon-academics{background-color:#e12}
-		.filter-icon.filter-icon-administrative{background-color:#0f7dbb}
-		.filter-icon.filter-icon-housing{background-color:#fcdb6c}
-		.filter-icon.service-icon,.filter-icon.route-icon{top:1px}
-		.filter-icon.service-icon{left:13px;top:-3px;padding:0}
-		.filter-icon.service-icon img{height:24px;width:24px}
+@import url(bootstrap.min.css);
+html{height:100%;overflow-y:hidden}
+body{height:100%;margin:0;padding:0}
+img{max-width:none}
+#header{height:55px;width:100%;position:relative;top:0;background-color:#000;border-bottom:3px solid #c8970e}
+#millersville-logo{float:left;width:32px;border:none;margin:10px 10px 10px 20px}
+#the-title{font-family:Georgia, "Times New Roman", serif;float:left;line-height:53px;width:50%;color:#fff;margin:0;padding:0}
+#search-mu{position:absolute;right:10px;top:14px}
+#search-mu input{font-size:11px;line-height:15px;padding:2px 5px}
+#search-mu .btn{line-height:15px;padding:4px 6px}
+#footer{margin-top:20px;border-top:1px solid #ddd;padding:10px}
+#afs{color:#adadad;font:normal 12px Arial, sans-serif}
+#map-canvas{position:absolute;bottom:0;left:0;right:0;top:58px;margin-left:340px}
+#map-canvas label{float:right;padding-top:2px;width:auto;text-align:left}
+#features-panel{width:310px;height:100%;overflow:auto;position:relative;float:left;z-index:999;background-color:#fff;border-right:1px solid #ddd;padding:10px 15px 0}
+#features-panel-content{height:760px}
+#options-nav-bar{background-color:#fff;border-right:1px solid #ddd;border-bottom:1px solid #eee;height:29px;overflow:hidden;position:relative;width:310px;margin:0;padding:15px}
+#map-options-toggler{height:20px;width:20px;position:absolute;top:17px;right:15px;background:#fff url(../options-toggler.png) no-repeat 100% 4px;border:1px solid #fff;text-indent:-999px;border-width:1px 1px 1px 0}
+.tabs{border:1px solid #999;border-top:none;width:100%;background:#fff}
+.tabs-content{display:none;color:#505050;font:normal 14px Arial, sans-serif}
+.tabs-content a{text-decoration:none}
+#features-panel fieldset legend{padding-bottom:15px}
+#map-results-wrap{display:none;padding:0 0 20px}
+#map-results .page{display:none;list-style:none;width:100%;margin:0;padding:0}
+#map-results .page.active{display:block}
+#map-results .page li{vertical-align:top;margin:0;padding:0}
+#map-results .page li .marker-result-label{background-color:#f2f2f2;border:1px solid #ddd;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;font-size:125%;line-height:14px;margin-top:3px;text-align:center;width:10%;display:inline-block;vertical-align:top;padding:5px 0}
+#map-results .page li a{display:inline-block;width:72%;margin:0;padding:0 0 10px 5px}
+#map-results .page li a span{color:#B0B0B0;display:block;font-size:90%}
+.pagination a,.pagination span{float:left;border-right:1px solid #ddd;line-height:26px;padding:0 8px}
+.pagination li.disabled span{background-color:transparent;color:#bfbfbf}
+#features-panel form{padding-bottom:20px;position:relative;width:99%}
+.kwsearch-clear{display:none;position:absolute;top:6px;right:92px;height:14px;width:14px;cursor:pointer;text-align:left;xtext-indent:-999px}
+#features-panel form fieldset{height:20px;padding-bottom:20px;position:relative}
+#kwsearch{display:block;margin-top:5px}
+#features-panel form fieldset#bldgsearch{height:45px;display:none}
+#bldgsearch label{line-height:24px;text-align:left}
+#bldgsearch .kwsearch-clear{right:25px;top:34px}
+#bldgsearch #bldgsearch-select{width:83%}
+#features-panel form .input{margin-left:0}
+#filter-map ul{list-style:none;margin:-15px 0 0;padding:0}
+#filter-map ul li.filter-heading{color:#333;font:bold 12px Arial, sans-serif;text-transform:uppercase;margin:15px 0 5px}
+#filter-map label{position:relative}
+#filter-map label input{margin-right:24px}
+.filter-icon{display:inline-block;height:10px;width:10px;margin-right:5px;position:absolute;top:4px;left:18px}
+.filter-icon.filter-icon-academics{background-color:#e12}
+.filter-icon.filter-icon-administrative{background-color:#0f7dbb}
+.filter-icon.filter-icon-housing{background-color:#fcdb6c}
+.filter-icon.service-icon,.filter-icon.route-icon{top:1px}
+.filter-icon.service-icon{left:13px;top:-3px;padding:0}
+.filter-icon.service-icon img{height:24px;width:24px}
+#sharedlink{height:75px;width:95%}
+#millersville-logo img,#filter-map legend,#link legend{border:none}
+#campusmap-ui,#panel-wrapper{height:100%}

@@ -299,11 +299,11 @@ $(function(){
 			}
 					
 			// Add a click event to the tabs.
-			$('#options-nav-bar').on('click','a.tab-button',function(){
+			$('#options-nav-bar').on('click','a.btn',function(){
 				var tab = this;
 				
-				$('#options-nav-bar').find('a').removeClass("selected"); 		
-				$(this).addClass("selected"); 
+				$('#options-nav-bar').find('a').removeClass("active"); 		
+				$(this).addClass("active"); 
 				
 				$('fieldset', $('#marker-search')).hide();
 				$('#sharedlink').blur();

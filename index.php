@@ -1,9 +1,8 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-<title>Backbone Campus Map</title>
-<link rel="stylesheet" href="css/main.css?v=1" />
-
+	<title>Campus Map - Millersville University</title>
+	<link rel="stylesheet" href="css/main.css?v=1.2" />
 </head>
 
 <body>
@@ -12,14 +11,8 @@
 	<a href="#" id="millersville-logo"><img src="http://www.millersville.edu/lib/v2/img/common/millersvilleCircleM-32.png" alt="Millersville University Home" /></a>
 	<h1 id="the-title">Campus Map</h1>
 	<form action="http://www.millersville.edu/searchresults.php" method="get" name="search" id="search-mu" class="form-inline">
-		<!--<fieldset> 
-			<input id="search-mu-keyword" name="query" type="text" value="Search web &amp; directory"/> 
-			<input alt="Search" id="search-mu-submit" name="search" src="http://www.millersville.edu/lib/v2/img/common/magnifyer.png" type="image"/> 						
-		</fieldset>-->
-
-			<input class="span2" name="query" type="text" placeholder="Search web &amp directory"/> 
-			<button class="btn btn-primary" name="search" type="submit" title="Search"><i class="icon-search icon-white"></i></button>
-
+		<input class="span2" name="query" type="text" placeholder="Search web &amp directory"/> 
+		<button class="btn btn-primary" name="search" type="submit" title="Search"><i class="icon-search icon-white"></i></button>
 	</form>
 </div>
 
@@ -28,13 +21,16 @@
 	<div id="map-canvas"></div> 
 	
 	<div id="panel-wrapper">
-		<div id="options-nav-bar">				
+		<div id="options-nav-bar" class="btn-toolbar">
+			<div class="btn-group">
+				<a title="Show the Search Map tab" id="tablink-search" href="#kwsearch" class="btn active">Search</a>
+				<a title="Show the Building List tab" id="tablink-buildings" href="#bldgsearch" class="btn">Building List</a>			
+				<a title="Show the Map Options tab" id="tablink-mapoptions" href="#map-overlays" class="btn">Overlays</a>
+				<a title="Link to this Map" id="tablink-link" href="#link" class="btn"><i class="icon-share"></i></a>
+			</div>
+
 			<a title="Close this sidebar" id="map-options-toggler" href="#">Close</a>
-			<a title="Show the Search Map tab" id="tablink-search" href="#kwsearch" class="tab-button left selected">Search</a>
-			<a title="Show the Building List tab" id="tablink-buildings" href="#bldgsearch" class="tab-button mid">Building List</a>			
-			<a title="Show the Map Options tab" id="tablink-mapoptions" href="#map-overlays" class="tab-button mid">Overlays</a>
-			<a title="Link to this Map" id="tablink-link" href="#link" class="tab-button right"><i class="icon-share"></i></a>
-		</div>	
+		</div>
 		
 		<div id="features-panel">
 			
@@ -67,7 +63,6 @@
 							}
 							
 							?>
-
 							<label for="bldgsearch-select">Select a building:</label>
 							<div class="input">
 								<select class="span4" id="bldgsearch-select" name="bldgsearch-select">
@@ -168,10 +163,9 @@
 </script>
 
 <script type="text/template" id="share-fields">
-	<h3>Share via URL</h3>
-	<p>Copy the link below to <strong>bookmark</strong> or share via <strong>e-mail</strong> or <strong>IM</strong>.</p>
-	<br />
 	<fieldset>
+		<legend>Share via URL</legend>
+		<p>Copy the link below to <strong>bookmark</strong> or share via <strong>e-mail</strong> or <strong>IM</strong>.</p>
 		<label for="sharedlink" style="display:none">Map Link</label>
 			<textarea id="sharedlink" class="span3" readonly="readonly"><%= shareUrl %></textarea>
 	</fieldset>
@@ -183,7 +177,7 @@
 <script src="js/backbone.0.5.3-min.js"></script> 
 
 <script src="//maps.google.com/maps/api/js?sensor=true" type="text/javascript"></script>
-<script src="js/main.js"></script> 
+<script src="js/app.min.js?v=1.2"></script> 
 
 </body>
 </html>
