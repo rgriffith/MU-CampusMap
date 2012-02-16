@@ -621,6 +621,8 @@ $(function(){
 				
 				// Update shared links.
 				self.Views.Panel.updateShareFields();
+				
+				return false;
 			});
 			
 			this.Router.route("search/:query", "search", searchLocations);

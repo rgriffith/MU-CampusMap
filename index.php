@@ -7,17 +7,27 @@
 
 <body>
 
-<div id="header">
+<!--<div id="header">
 	<a href="#" id="millersville-logo"><img src="http://www.millersville.edu/lib/v2/img/common/millersvilleCircleM-32.png" alt="Millersville University Home" /></a>
 	<h1 id="the-title">Campus Map</h1>
 	<form action="http://www.millersville.edu/searchresults.php" method="get" name="search" id="search-mu" class="form-inline">
 		<input class="span2" name="query" type="text" placeholder="Search web &amp directory"/> 
 		<button class="btn btn-primary" name="search" type="submit" title="Search"><i class="icon-search icon-white"></i></button>
 	</form>
+</div>-->
+<div class="navbar">
+	<div class="navbar-inner">
+		<div class="container">
+			<a class="brand" href="http://www.millersville.edu/"><img src="http://www.millersville.edu/lib/v2/img/common/millersvilleCircleM-32.png" alt="Millersville University Home" />Campus Map</a>
+			<form class="navbar-search pull-right">
+				<input class="search-query input-large" name="query" type="text" placeholder="Search web &amp directory"/> 
+				<button class="btn btn-primary" name="search" type="submit" title="Search"><i class="icon-search icon-white"></i></button>
+			</form>
+		</div>
+	</div>
 </div>
 
-<div id="campusmap-ui">
-	
+<div id="campusmap-ui" class="container">
 	<div id="map-canvas"></div> 
 	
 	<div id="panel-wrapper">
@@ -41,7 +51,7 @@
 						<fieldset id="kwsearch" class="form-inline">
 							<input id="kwsearch-keyword" name="query" type="text" placeholder="Search Campus Map"/> 
 							<button id="kwsearch-submit" class="btn btn-primary" name="search" type="submit" title="Perform Search"><i class="icon-search icon-white"></i></button>
-							<a title="Clear Search" class="close kwsearch-clear">&times;</a>	
+							<a href="#" title="Clear Search" class="close kwsearch-clear">&times;</a>	
 						</fieldset>
 						<fieldset id="bldgsearch"> 
 							<?php			
@@ -177,7 +187,7 @@
 <script src="js/backbone.0.5.3-min.js"></script> 
 
 <script src="//maps.google.com/maps/api/js?sensor=true" type="text/javascript"></script>
-<script src="js/app.min.js?v=1.2"></script> 
+<script src="js/app.js?v=1.2"></script> 
 
 </body>
 </html>
