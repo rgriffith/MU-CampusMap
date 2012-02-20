@@ -53,7 +53,7 @@
 						<fieldset id="bldgsearch"> 
 							<?php			
 							$buildings = json_decode(file_get_contents('ajax/buildingcache.json'));
-							$acadBldgsHTML = $adminBldgsHTML = $dormBldgsHTML = '';
+							$acadBldgsHTML = $adminBldgsHTML = $dormBldgsHTML = $otherBldgsHTML = '';
 							foreach ($buildings as $name => $b) {
 								$optionHTML = '<option value="'.$b->id.'">'.$b->name.'</option>';
 								switch ($b->category) {
@@ -64,7 +64,10 @@
 										$adminBldgsHTML .= $optionHTML;
 										break;
 									case 'dorm':
-										$dormBldgsHTML .= $optionHTML;
+										$dormBldgsHTML .= $optionHTML;										
+										break;
+									default:
+										$otherBldgsHTML .= $optionHTML;
 										break;
 								}
 							}
@@ -82,6 +85,9 @@
 									</optgroup>
 									<optgroup label="Dorm Buildings">
 										<?php echo $dormBldgsHTML; ?>
+									</optgroup>
+									<optgroup label="Other Buildings">
+										<?php echo $otherBldgsHTML; ?>
 									</optgroup>
 								</select>
 							<a title="Clear Search" class="close kwsearch-clear">&times;</a>								
@@ -184,7 +190,7 @@
 <script src="js/backbone.0.5.3-min.js"></script> 
 
 <script src="//maps.google.com/maps/api/js?sensor=true" type="text/javascript"></script>
-<script src="js/app.min.js?v=1.2.1"></script> 
+<script src="js/app.js?v=1.2.1"></script> 
 
 </body>
 </html>

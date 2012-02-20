@@ -65,7 +65,7 @@
 					'image' => '',
 					'infoWindow' => array(
 						'directionsUrl' => 'http://maps.google.com/maps?f=d&amp;source=s_d&amp;daddr='.$m->{'system-data-structure'}->marker->lat.','.$m->{'system-data-structure'}->marker->lng.'&amp;hl=en',
-						'shareUrl' => 'http://166.66.47.86/campusmap/#locations/'.$marker['id'],
+						'shareUrl' => '',
 						'content' => ''
 					)
 				);	
@@ -79,6 +79,8 @@
 				if ($m->{'system-data-structure'}->marker->image && $m->{'system-data-structure'}->marker->image->path != '/') {
 					$marker['image'] = str_replace('/millersville', 'http://www.millersville.edu', $m->{'system-data-structure'}->marker->image->path);
 				}
+				
+				$marker['infoWindow']['shareUrl'] = 'http://166.66.47.86/campusmap/#locations/'.$marker['id'];
 				
 				$marker['infoWindow']['content'] = '<div style="font-family: Arial,sans-serif; font-size: small; height:auto;width:380px;">
 					<div style="font-weight: bold; font-size: medium; margin-bottom: 0em;">'.$marker['name'].'</div>

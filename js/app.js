@@ -118,7 +118,7 @@ $(function(){
 		el: $("#map-canvas"),
 		
 		map: null,
-		kmlVersion: '1.4',
+		kmlVersion: '1.4.5',
 		layers: {
 			kml: []
 		},
@@ -158,7 +158,7 @@ $(function(){
 					var isBuilding = checkbox.value.indexOf('building') != -1 ? true : false;
 					
 					self.showKmlLayer(checkbox.id, {
-						url: 'http://www.millersville.edu/directions/kml/'+checkbox.value+'.kml',
+						url: 'http://www.millersville.edu/directions/kml/mobile/'+checkbox.value+'.kml?v=' + self.kmlVersion,
 						suppressInfoWindows: isBuilding, 
 						preserveViewport: true
 					});
