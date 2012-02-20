@@ -1,20 +1,15 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="en">
 <head>
+	<meta charset="utf-8"/>
 	<title>Campus Map - Millersville University</title>
-	<link rel="stylesheet" href="css/main.css?v=1.2" />
+	<meta content="campus map, directions, map, buildings, houses, dorms, housing, academic buildings, administrative buildings, shuttle, bus, routes, stops, bus stops, emergency callboxes, callboxes, lots, parking, parking lots," name="keywords"/>
+	<meta content="Search or browse by building name. View building information and get directions." name="description"/>
+	<link rel="stylesheet" href="css/main.css?v=1.2.2" />
 </head>
 
 <body>
 
-<!--<div id="header">
-	<a href="#" id="millersville-logo"><img src="http://www.millersville.edu/lib/v2/img/common/millersvilleCircleM-32.png" alt="Millersville University Home" /></a>
-	<h1 id="the-title">Campus Map</h1>
-	<form action="http://www.millersville.edu/searchresults.php" method="get" name="search" id="search-mu" class="form-inline">
-		<input class="span2" name="query" type="text" placeholder="Search web &amp directory"/> 
-		<button class="btn btn-primary" name="search" type="submit" title="Search"><i class="icon-search icon-white"></i></button>
-	</form>
-</div>-->
 <div class="navbar navbar-fixed-top">
 	<div class="navbar-inner">
 		<div class="container">
@@ -35,14 +30,11 @@
 				<a title="Show the Map Options tab" id="tablink-mapoptions" href="#map-overlays" class="btn">Overlays</a>
 				<a title="Link to this Map" id="tablink-link" href="#link" class="btn"><i class="icon-share"></i></a>
 			</div>
-
 			<a title="Close this sidebar" id="map-options-toggler" href="#">Close</a>
 		</div>
 		
-		<div id="features-panel">
-			
-			<div id="features-panel-content">
-			
+		<div id="features-panel">			
+			<div id="features-panel-content">			
 				<div id="map-search" class="tabs-content">
 					<form action="" id="marker-search" method="get">
 						<fieldset id="kwsearch" class="form-inline">
@@ -70,8 +62,7 @@
 										$otherBldgsHTML .= $optionHTML;
 										break;
 								}
-							}
-							
+							}							
 							?>
 							<label for="bldgsearch-select">Select a building:</label>
 							<div class="input">
@@ -190,7 +181,20 @@
 <script src="js/backbone.0.5.3-min.js"></script> 
 
 <script src="//maps.google.com/maps/api/js?sensor=true" type="text/javascript"></script>
-<script src="js/app.js?v=1.2.1"></script> 
+<script src="js/app.min.js?v=1.2.2"></script> 
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123021-2']);
+  _gaq.push(['_setDomainName', 'millersville.edu']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
 
 </body>
 </html>
