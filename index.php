@@ -15,14 +15,11 @@
 		<button class="btn btn-primary" name="search" type="submit" title="Search"><i class="icon-search icon-white"></i></button>
 	</form>
 </div>-->
-<div class="navbar">
+<div class="navbar navbar-fixed-top">
 	<div class="navbar-inner">
 		<div class="container">
-			<a class="brand" href="http://www.millersville.edu/"><img src="http://www.millersville.edu/lib/v2/img/common/millersvilleCircleM-32.png" alt="Millersville University Home" />Campus Map</a>
-			<form class="navbar-search pull-right">
-				<input class="search-query input-large" name="query" type="text" placeholder="Search web &amp directory"/> 
-				<button class="btn btn-primary" name="search" type="submit" title="Search"><i class="icon-search icon-white"></i></button>
-			</form>
+			<a class="brand" href="#">Campus Map</a>
+			<p class="navbar-text pull-right"><a href="http://www.millersville.edu" title="Millersville University Home"><img src="http://www.millersville.edu/lib/v2/img/common/millersvilleCircleM-32.png" alt="Millersville University Home" /></a></p>
 		</div>
 	</div>
 </div>
@@ -50,7 +47,7 @@
 					<form action="" id="marker-search" method="get">
 						<fieldset id="kwsearch" class="form-inline">
 							<input id="kwsearch-keyword" name="query" type="text" placeholder="Search Campus Map"/> 
-							<button id="kwsearch-submit" class="btn btn-primary" name="search" type="submit" title="Perform Search"><i class="icon-search icon-white"></i></button>
+							<button id="kwsearch-submit" class="btn btn-primary" name="search" type="submit" title="Perform Search">Search</button>
 							<a href="#" title="Clear Search" class="close kwsearch-clear">&times;</a>	
 						</fieldset>
 						<fieldset id="bldgsearch"> 
@@ -187,7 +184,7 @@
 <script src="js/backbone.0.5.3-min.js"></script> 
 
 <script src="//maps.google.com/maps/api/js?sensor=true" type="text/javascript"></script>
-<script src="js/app.js?v=1.2"></script> 
+<script src="js/app.min.js?v=1.2.1"></script> 
 
 </body>
 </html>

@@ -685,7 +685,7 @@ $(function(){
 		
 		// Clear the search results and remove any shown markers.
 		// ---------------
-		clearResults: function() {
+		clearResults: function() {		
 			this.Router.navigate('', true);
 		},
 		
@@ -700,7 +700,7 @@ $(function(){
 				$("#features-panel, #map-canvas").animate({left: "0px"}, 100, "linear");
 				
 				// Maximize the tab bar.
-				$("#options-nav-bar").animate({left: '0px', height: '29px', padding: '15px'}, 100, "linear", function() {
+				$("#options-nav-bar").animate({left: '0px', height: '29px', top: '0px', padding: '15px'}, 100, "linear", function() {
 					// Switch the arrow's orientation and title.
 					$('#map-options-toggler').attr('title','Close this sidebar').css({backgroundPosition:'48% 4px', top:'17px', right:'10px'});
 				});
