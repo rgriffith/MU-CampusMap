@@ -5,7 +5,7 @@
 	<title>Campus Map - Millersville University</title>
 	<meta content="campus map, directions, map, buildings, houses, dorms, housing, academic buildings, administrative buildings, shuttle, bus, routes, stops, bus stops, emergency callboxes, callboxes, lots, parking, parking lots," name="keywords"/>
 	<meta content="Search or browse by building name. View building information and get directions." name="description"/>
-	<link rel="stylesheet" href="css/main.css?v=1.2.2" />
+	<link rel="stylesheet" href="css/main.css?v=1.3" />
 </head>
 
 <body>
@@ -153,6 +153,26 @@
 	</div>
 </div>
 
+<!-- Tip Content -->
+<ol id="joyRideTipContent">
+	<li data-id="tablink-search" data-text="Next: Buildings">
+		<h2>Search by Keyword</h2>
+		<p>You can search for buildings and/or departments using the keyword search tab.</p>
+	</li>
+	<li data-id="tablink-buildings" data-text="Next: Overlays">
+		<h2>Search by Building</h2>
+		<p>Not sure what to search for? Try browsing a listing of building names.</p>
+	</li>
+	<li data-id="tablink-mapoptions" data-text="Next: Share">
+		<h2>Overlays</h2>
+		<p>Want a general overview of what campus looks like, or the locations for parking and emergency callboxes? How about shuttle routes, too?</p>
+	</li>
+	<li data-id="tablink-link" data-text="Close Tour">
+		<h2>Share a URL</h2>
+		<p>Want to send someone a link to a building, or a search you made? Use the share tab to easily copy a link to bookmark, e-mail, or even IM.</p>
+	</li>
+</ol>
+
 <script type="text/template" id="search-results-stats">
 	<div id="map-results-feedback">
 		<p>Showing <strong><%= lowerBound == 0 ? 1 : lowerBound+1 %> - <%= upperBound <= resultCount ? upperBound : resultCount %></strong> of <strong><%= resultCount %></strong><% print(query !== '' ? ' for <em>'+query+'</em>' : ''); %>.</p>
@@ -175,13 +195,23 @@
 	</fieldset>
 </script>
 
-
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script src="js/underscore.1.3.1-min.js"></script>
-<script src="js/backbone.0.5.3-min.js"></script> 
+<script src="js/backbone.0.5.3-min.js"></script>
 
 <script src="//maps.google.com/maps/api/js?sensor=true" type="text/javascript"></script>
-<script src="js/app.min.js?v=1.2.2"></script> 
+<script src="js/app.min.js?v=1.2.2"></script>
+
+<script src="js/jquery.joyride.1.0.2-min.js"></script> 
+<script type="text/javascript">
+	$(window).load(function() {
+		$(this).joyride({
+			'cookieMonster': true,
+			'cookieName': 'mucampusmaptour',
+			'cookieDomain': false
+		});
+	});
+</script>
 
 <script type="text/javascript">
   var _gaq = _gaq || [];
