@@ -200,7 +200,7 @@
 <script src="js/backbone.0.5.3-min.js"></script>
 
 <script src="//maps.google.com/maps/api/js?sensor=true" type="text/javascript"></script>
-<script src="js/app.min.js?v=1.3"></script>
+<script src="js/app.min.js?v=1.3.1"></script>
 
 <script src="js/jquery.joyride.1.0.2-min.js"></script> 
 <script type="text/javascript">

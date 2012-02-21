@@ -597,6 +597,8 @@ $(function(){
 
 				if (query !== '') {
 					self.Collections.Locations.removeShownMarkers();
+					
+					self.trackVirtualPageView();
 
 					_.delay(function() {	
 						// Update the route URL so the pagination links are up to date.
@@ -606,7 +608,7 @@ $(function(){
 						self.Views.Panel.searchByKeyword(query, page);
 						
 						// Update shared links.
-						self.Views.Panel.updateShareFields();
+						self.Views.Panel.updateShareFields();													
 					}, 300);
 				} else {
 					self.clearResults();
@@ -617,11 +619,12 @@ $(function(){
 				// Reset everything.
 				self.Collections.Locations.removeShownMarkers();
 				self.Views.Panel.routeUrl = '';
-				self.Views.Panel.clearResults();
+				self.Views.Panel.clearResults();				
+				self.trackVirtualPageView();
 				
 				// Update shared links.
 				self.Views.Panel.updateShareFields();
-				
+
 				return false;
 			});
 			
@@ -632,6 +635,8 @@ $(function(){
 				ids = ids.split(',');
 				self.Collections.Locations.removeShownMarkers();
 				
+				self.trackVirtualPageView();
+				
 				_.delay(function() {
 					// Update the route URL so the pagination links are up to date.
 					self.Views.Panel.routeUrl = self.getRouteUrl();
@@ -640,7 +645,7 @@ $(function(){
 					self.Views.Panel.searchByIDs(ids);
 					
 					// Update shared links.
-					self.Views.Panel.updateShareFields();
+					self.Views.Panel.updateShareFields();					
 				}, 300);
 			});
 			
@@ -673,6 +678,8 @@ $(function(){
 			// Update shared links.			
 			this.Views.Panel.updateShareFields();			
 			
+			this.trackVirtualPageView();
+			
 			this.Views.Panel.updateResults(page);
 		},
 		
@@ -687,6 +694,14 @@ $(function(){
 		// ---------------
 		clearResults: function() {		
 			this.Router.navigate('', true);
+		},
+		
+		// Registers a virtual pageview with Google Analytics.
+		// ---------------
+		trackVirtualPageView: function() {
+			if (_gaq && typeof _gaq === 'object') {
+				_gaq.push(['_trackPageview', location.pathname + location.search  + location.hash]);
+			}
 		},
 		
 		// Show/Hide the features panel.
