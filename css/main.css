@@ -358,7 +358,7 @@ img{max-width:none}
 #features-panel{width:310px;height:100%;overflow:auto;position:relative;float:left;z-index:999;background-color:#fff;border-right:1px solid #ddd;padding:10px 15px 0}
 #features-panel-content{height:760px}
 #options-nav-bar{background-color:#fff;border-right:1px solid #ddd;border-bottom:1px solid #eee;height:29px;overflow:hidden;position:relative;width:310px;margin:0;padding:15px}
-#map-options-toggler{height:20px;width:20px;position:absolute;top:17px;right:15px;background:#fff url(../options-toggler.png) no-repeat 100% 4px;border:1px solid #fff;text-indent:-999px;border-width:1px 1px 1px 0}
+#map-options-toggler{height:20px;width:20px;position:absolute;top:17px;right:15px;background:#fff url(../img/options-toggler.png) no-repeat 100% 4px;border:1px solid #fff;text-indent:-999px;border-width:1px 1px 1px 0}
 #tablink-link{height:18px;}
 .tabs{border:1px solid #999;border-top:none;width:100%;background:#fff}
 .tabs-content{display:none;color:#505050;font:normal 14px Arial, sans-serif}
