@@ -1,0 +1,293 @@
+html {
+	height:100%;
+	overflow-y:hidden;
+}
+
+body {
+	height:100%;
+	margin:0;
+	padding:0;
+	position:relative;
+}
+
+img {
+	max-width:none;
+}
+
+.navbar {
+	margin-bottom:0;
+	position:relative;
+	
+	.container {
+		margin: 0;
+		padding: 0 20px;
+		width: auto;
+	}
+	
+	.brand {
+		padding-top:12px;
+	}
+}
+.navbar-text img {
+	float:right;
+	margin-top:8px;
+}
+
+#footer {
+	border-top:1px solid #ddd;
+	margin-top:20px;
+	padding:10px;
+}
+
+#afs {
+	color:#adadad;
+}
+
+#campusmap-ui,
+#panel-wrapper { height:100%; }
+
+#campusmap-ui {
+	margin: 0;
+}
+
+#map-canvas {
+	bottom:0;
+	left:340px;
+	margin-left:0;
+	position:absolute;
+	right:0;
+	top:45px;
+	
+	label {
+		float:right;
+		padding-top:2px;
+		text-align:left;
+		width:auto;
+	}	
+}
+
+#features-panel {
+	background-color:#fff;
+	border-right:1px solid #ddd;
+	float:left;
+	height:100%;
+	overflow:auto;
+	padding:10px 15px 0;
+	position:relative;
+	width:310px;
+	z-index:999;
+}
+
+#features-panel-content {
+	height:760px;
+}
+
+#options-nav-bar {
+	background-color:#fff;
+	border-bottom:1px solid #eee;
+	border-right:1px solid #ddd;
+	height:29px;
+	margin:0;
+	overflow:hidden;
+	padding:15px;
+	position:relative;
+	width:310px;
+}
+
+#map-options-toggler {
+	border:1px solid #fff;
+	border-width:1px 1px 1px 0;
+	color:transparent;
+	font:0/0 a;
+	height:20px;
+	position:absolute;
+	right:15px;
+	text-shadow:none;
+	top:19px;
+	width:20px;
+}
+
+#tablink-link {
+	height:18px;
+}
+
+.tabs {
+	background:#fff;
+	border:1px solid #999;
+	border-top:none;
+	width:100%;
+}
+
+.tabs-content {
+	color:#505050;
+	display:none;
+	font:normal 14px Arial, sans-serif;
+	
+	a { text-decoration:none; }
+}
+
+#features-panel fieldset legend {
+	margin:0;
+	padding:0 0 5px;
+}
+
+#map-results-wrap {
+	display:none;
+	padding:0 0 20px;
+}
+
+#map-results .page {
+	display:none;
+	list-style:none;
+	margin:0;
+	padding:0;
+	width:100%;
+	
+	&.active { display:block; }
+	
+	li {
+		margin:0;
+		padding:0;
+		vertical-align:top;
+		
+		.marker-result-label {
+			.border-radius(5px);
+			background-color:#f2f2f2;
+			border:1px solid #ddd;
+			display:inline-block;
+			font-size:125%;
+			height:20px;
+			margin-top:3px;
+			padding:5px 0;
+			text-align:center;
+			vertical-align:top;
+			width:10%;
+		}
+		
+		a {
+			display:inline-block;
+			margin:0;
+			padding:0 0 10px 5px;
+			width:72%;
+			
+			span {
+				color:#B0B0B0;
+				display:block;
+				font-size:90%;
+			}
+		}
+	}
+}
+
+.pagination a,.pagination span {
+	border-right:1px solid #ddd;
+	float:left;
+	line-height:26px;
+	padding:0 8px;
+}
+
+.pagination li.disabled span {
+	background-color:transparent;
+	color:#bfbfbf;
+}
+
+.kwsearch-clear {
+	cursor:pointer;
+	display:none;
+	height:14px;
+	left:200px;
+	position:absolute;
+	text-align:left;
+	top:6px;
+	width:14px;
+}
+
+#kwsearch {
+	display:block;
+	margin-top:5px;
+}
+
+#features-panel form {
+	padding-bottom:20px;
+	position:relative;
+	width:99%;
+	
+	fieldset {
+		height:20px;
+		padding-bottom:0;
+		position:relative;
+		
+		&#bldgsearch {
+			display:none;
+			height:45px;
+			
+			label {
+				line-height:24px;
+				text-align:left;
+			}
+			
+			.kwsearch-clear {
+				left:265px;
+				top:34px;
+			}
+			
+			#bldgsearch-select { width:83%; }
+		}
+	}
+	
+	.input { margin-left:0; }
+	
+}
+
+#filter-map legend,#link legend { border:none; }
+
+#filter-map ul {
+	list-style:none;
+	margin:-15px 0 0;
+	padding:0;
+	
+	li.filter-heading {
+		color:#333;
+		font:bold 12px Arial, sans-serif;
+		margin:15px 0 5px;
+		text-transform:uppercase;
+	}
+}
+
+#filter-map label {
+	position:relative;
+	
+	input { margin-right:24px; }
+}
+
+.filter-icon {
+	display:inline-block;
+	height:10px;
+	left:18px;
+	margin-right:5px;
+	position:absolute;
+	top:4px;
+	width:10px;
+	
+	&.filter-icon-academics { background-color:#e12; }
+	&.filter-icon-administrative { background-color:#0f7dbb; }
+	&.filter-icon-housing { background-color:#fcdb6c; }
+
+	&.route-icon { top:1px;	}
+	
+	&.service-icon {
+		left:13px;
+		padding:0;
+		top:-3px;
+		
+		img {
+			height:24px;
+			width:24px;
+		}
+	}
+}
+
+#sharedlink {
+	height:75px;
+	width:95%;
+}
