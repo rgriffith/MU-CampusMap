@@ -5,7 +5,7 @@
 	<title>Campus Map - Millersville University</title>
 	<meta content="campus map, directions, map, buildings, houses, dorms, housing, academic buildings, administrative buildings, shuttle, bus, routes, stops, bus stops, emergency callboxes, callboxes, lots, parking, parking lots," name="keywords"/>
 	<meta content="Search or browse by building name. View building information and get directions." name="description"/>
-	<link rel="stylesheet" href="css/main.css?v=1.3" />
+	<link rel="stylesheet" href="css/bootstrap.css?v=1.3.2" />
 </head>
 
 <body>
@@ -26,11 +26,11 @@
 		<div id="options-nav-bar" class="btn-toolbar">
 			<div class="btn-group">
 				<a title="Show the Search Map tab" id="tablink-search" href="#kwsearch" class="btn active">Search</a>
-				<a title="Show the Building List tab" id="tablink-buildings" href="#bldgsearch" class="btn">Building List</a>			
+				<a title="Show the Building List tab" id="tablink-buildings" href="#bldgsearch" class="btn">Buildings</a>			
 				<a title="Show the Map Options tab" id="tablink-mapoptions" href="#map-overlays" class="btn">Overlays</a>
-				<a title="Link to this Map" id="tablink-link" href="#link" class="btn"><i class="icon-share"></i></a>
+				<a title="Link to this Map" id="tablink-link" href="#link" class="btn"><i class="icon-share-alt"></i></a>
 			</div>
-			<a title="Close this sidebar" id="map-options-toggler" href="#">Close</a>
+			<a title="Close this sidebar" id="map-options-toggler" class="icon-chevron-left" href="#">Close</a>
 		</div>
 		
 		<div id="features-panel">			
@@ -39,7 +39,7 @@
 					<form action="" id="marker-search" method="get">
 						<fieldset id="kwsearch" class="form-inline">
 							<input id="kwsearch-keyword" name="query" type="text" placeholder="Search Campus Map"/> 
-							<button id="kwsearch-submit" class="btn btn-primary" name="search" type="submit" title="Perform Search">Search</button>
+							<button id="kwsearch-submit" class="btn btn-primary" name="search" type="submit" title="Perform Search"><i class="icon-search icon-white"></i></button>
 							<a href="#" title="Clear Search" class="close kwsearch-clear">&times;</a>	
 						</fieldset>
 						<fieldset id="bldgsearch"> 
@@ -98,47 +98,47 @@
 					 		<li class="filter-heading">Buildings</li>
 					 		
 							<li><label for="baseLayer" class="checkbox">
-								<input type="checkbox" name="baseLayer" class="filter-checkbox" id="baseLayer" checked="checked" value="marker-dump" />
+								<input type="checkbox" name="baseLayer" class="filter-checkbox" id="baseLayer" checked="checked" value="http://www.millersville.edu/directions/kml/mobile/marker-dump.kml" />
 									All Buildings</label></li>
 					
 							<li><label for="academicsLayer" class="checkbox">
-								<input type="checkbox" name="academicsLayer" class="filter-checkbox" id="academicsLayer" value="academic-buildings" />
+								<input type="checkbox" name="academicsLayer" class="filter-checkbox" id="academicsLayer" value="http://www.millersville.edu/directions/kml/mobile/academic-buildings.kml" />
 									<span class="filter-icon filter-icon-academics"></span>Academic Buildings</label></li>
 					
 							<li><label for="administrativeLayer" class="checkbox">
-								<input type="checkbox" name="administrativeLayer" class="filter-checkbox" id="administrativeLayer" value="administrative-buildings" />
+								<input type="checkbox" name="administrativeLayer" class="filter-checkbox" id="administrativeLayer" value="http://www.millersville.edu/directions/kml/mobile/administrative-buildings.kml" />
 									<span class="filter-icon filter-icon-administrative"></span>Administrative Buildings</label></li>
 							
 							<li><label for="dormLayer" class="checkbox">
-								<input type="checkbox" name="dormLayer" class="filter-checkbox" id="dormLayer" value="dorm-buildings" />
+								<input type="checkbox" name="dormLayer" class="filter-checkbox" id="dormLayer" value="http://www.millersville.edu/directions/kml/mobile/dorm-buildings.kml" />
 									<span class="filter-icon filter-icon-housing"></span>Student Housing</label></li>
 							
 							<li class="filter-heading">Services</li>
 							
 							<li><label for="emergencycallboxesLayer" class="checkbox">
-								<input type="checkbox" name="emergencycallboxesLayer" class="filter-checkbox" id="emergencycallboxesLayer" value="mu-emergencycallboxes" />
+								<input type="checkbox" name="emergencycallboxesLayer" class="filter-checkbox" id="emergencycallboxesLayer" value="http://www.millersville.edu/directions/kml/mu-emergencycallboxes.kml" />
 									<span class="filter-icon service-icon"><img src="http://www.millersville.edu/directions/img/icons/callbox.png" alt="" /></span>Emergency Callboxes
 								</label></li>
 							
 							<li><label for="muparkingLayer" class="checkbox">
-								<input type="checkbox" name="muparkingLayer" class="filter-checkbox" id="muparkingLayer" value="mu-parkinglots" />
+								<input type="checkbox" name="muparkingLayer" class="filter-checkbox" id="muparkingLayer" value="http://www.millersville.edu/directions/kml/mu-parkinglots.kml" />
 									<span class="filter-icon service-icon"><img src="http://www.millersville.edu/directions/img/icons/parking.png" alt="" /></span>Parking Lots
 								</label></li>
 							
 							<li class="filter-heading">Shuttle Routes</li>
 							
 							<li><label for="mushuttleLayer" class="checkbox">
-								<input type="checkbox" name="mushuttleLayer" class="filter-checkbox" id="mushuttleLayer" value="mu-shuttlebus" />
+								<input type="checkbox" name="mushuttleLayer" class="filter-checkbox" id="mushuttleLayer" value="http://www.millersville.edu/directions/kml/mu-shuttlebus.kml" />
 									<span class="filter-icon route-icon"><img src="http://chart.apis.google.com/chart?chs=12x12&cht=ls&chco=FF69BB&chd=s:A9&chls=2" alt="" /></span>MU Campus Shuttle
 								</label></li>
 								
 							<li><label for="route16" class="checkbox">
-								<input type="checkbox" name="route16" class="filter-checkbox" id="route16" value="route-16" />
+								<input type="checkbox" name="route16" class="filter-checkbox" id="route16" value="http://www.millersville.edu/directions/kml/route-16.kml" />
 									<span class="filter-icon route-icon"><img src="http://chart.apis.google.com/chart?chs=12x12&cht=ls&chco=ff694e&chd=s:A9&chls=2" alt="" /></span>MU-Lancaster Route 16
 								</label></li>
 								
 							<li><label for="parkcity" class="checkbox">
-								<input type="checkbox" name="parkcity" class="filter-checkbox" id="parkcity" value="park-city-xpress" />
+								<input type="checkbox" name="parkcity" class="filter-checkbox" id="parkcity" value="http://www.millersville.edu/directions/kml/park-city-xpress.kml" />
 									<span class="filter-icon route-icon"><img src="http://chart.apis.google.com/chart?chs=12x12&cht=ls&chco=5577bb&chd=s:A9&chls=2" alt="" /></span>MU Park City Xpress
 								</label></li>
 						</ul>
@@ -200,7 +200,7 @@
 <script src="js/backbone.0.5.3-min.js"></script>
 
 <script src="//maps.google.com/maps/api/js?sensor=true" type="text/javascript"></script>
-<script src="js/app.min.js?v=1.3.1"></script>
+<script src="js/app.min.js?v=1.3.2"></script>
 
 <script src="js/jquery.joyride.1.0.2-min.js"></script> 
 <script type="text/javascript">

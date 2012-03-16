@@ -134,7 +134,7 @@ $(function(){
 			this.map = new google.maps.Map(this.el[0], {
 				zoom: 16,
 				zoomControl: true,
-				panControl: true,
+				panControl: false,
 				center: new google.maps.LatLng(39.996635, -76.353929),		
 				mapTypeId: google.maps.MapTypeId.ROADMAP
 			});
@@ -158,7 +158,7 @@ $(function(){
 					var isBuilding = checkbox.value.indexOf('building') != -1 ? true : false;
 					
 					self.showKmlLayer(checkbox.id, {
-						url: 'http://www.millersville.edu/directions/kml/mobile/'+checkbox.value+'.kml?v=' + self.kmlVersion,
+						url: checkbox.value+'?v=' + self.kmlVersion,
 						suppressInfoWindows: isBuilding, 
 						preserveViewport: true
 					});
@@ -713,11 +713,15 @@ $(function(){
 			if (offset.left < 0 ) {
 				// Show the options panel
 				$("#features-panel, #map-canvas").animate({left: "0px"}, 100, "linear");
+				$("#map-canvas").animate({left: "340px"}, 100, "linear");
 				
 				// Maximize the tab bar.
 				$("#options-nav-bar").animate({left: '0px', height: '29px', top: '0px', padding: '15px'}, 100, "linear", function() {
 					// Switch the arrow's orientation and title.
-					$('#map-options-toggler').attr('title','Close this sidebar').css({backgroundPosition:'48% 4px', top:'17px', right:'10px'});
+					$('#map-options-toggler').attr({
+						'title': 'Close this sidebar',
+						'class': 'icon-chevron-left'
+					}).css({top:'19px', right:'15px'});
 				});
 			} else {
 				// Hide the options pabel.
@@ -729,7 +733,10 @@ $(function(){
 				// Minify the tab bar, showing only the arrow.
 				$("#options-nav-bar").animate({left: "-300px", height: '10px', padding: '5px'}, 100, "linear", function(){
 					// Switch the arrow's orientation and title.
-					$('#map-options-toggler').attr('title','Open this sidebar').css({backgroundPosition:'48% -28px', top:'-1px', right:'-2px'});
+					$('#map-options-toggler').attr({
+						'title': 'Open this sidebar',
+						'class': 'icon-chevron-right'
+					}).css({top:'1px', right:'-2px'});
 				});
 			}
 			return false;
