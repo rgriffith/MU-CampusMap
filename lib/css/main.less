@@ -66,6 +66,22 @@ img {
 	}	
 }
 
+.map-infowindow {
+	overflow:hidden;
+	width:380px;
+	font: normal small Arial,sans-serif;	
+	
+	img {
+		float: right;
+		margin-top: 1em;
+		border: 2px solid @grayLighter;
+	}
+	
+	address {
+		margin-top: 1em;
+	}
+}
+
 #features-panel {
 	background-color:#fff;
 	border-right:1px solid #ddd;
@@ -205,6 +221,11 @@ img {
 #kwsearch {
 	display:block;
 	margin-top:5px;
+	
+	.help-block {
+		font-size: 11px;
+		margin-top: 3px;
+	}
 }
 
 #features-panel form {
@@ -213,13 +234,13 @@ img {
 	width:99%;
 	
 	fieldset {
-		height:20px;
+		height:10px;
 		padding-bottom:0;
 		position:relative;
 		
 		&#bldgsearch {
 			display:none;
-			height:45px;
+			height:40px;
 			
 			label {
 				line-height:24px;
@@ -231,7 +252,7 @@ img {
 				top:34px;
 			}
 			
-			#bldgsearch-select { width:83%; }
+			#bldgsearch-select {width:83%;}
 		}
 	}
 	
