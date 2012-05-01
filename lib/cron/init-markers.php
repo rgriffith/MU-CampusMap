@@ -53,7 +53,7 @@
 					'lng' => (float)$m->lng,
 					'address' => !empty($m->address) ? (string)$m->address : '&nbsp;',
 					'description' => (string)$m->description,
-					'category' => ((string)$m->cat ? (string)$m->cat : ''),
+					'category' => ((string)$m->category ? (string)$m->category : ''),
 					'departments' => $mDepartments,
 					'image' => !empty($m->image) ? 'http://www.millersville.edu/directions'.(string)$m->image : '',
 					'directionsUrl' => (string)$m->directionsUrl,
