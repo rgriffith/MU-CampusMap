@@ -5,7 +5,7 @@
 	<title>Campus Map - Millersville University</title>
 	<meta content="campus map, directions, map, buildings, houses, dorms, housing, academic buildings, administrative buildings, shuttle, bus, routes, stops, bus stops, emergency callboxes, callboxes, lots, parking, parking lots," name="keywords"/>
 	<meta content="Search or browse by building name. View building information and get directions." name="description"/>
-	<link rel="stylesheet" href="lib/css/bootstrap.css?v=1.3.4" />
+	<link rel="stylesheet" href="lib/css/bootstrap.css?v=1.4" />
 </head>
 
 <body>
@@ -13,7 +13,7 @@
 <div id="header" class="navbar navbar-fixed-top">
 	<div class="navbar-inner">
 		<div class="container">
-			<a class="brand" href="#">Campus Map</a>
+			<a class="brand" href="index.php">Campus Map</a>
 			<p class="navbar-text pull-right"><a href="http://www.millersville.edu" title="Millersville University Home"><img src="http://www.millersville.edu/lib/v2/img/common/millersvilleCircleM-32.png" alt="Millersville University Home" /></a></p>
 		</div>
 	</div>
@@ -43,7 +43,7 @@
 					</fieldset>
 					<fieldset id="locsearch"> 
 						<?php			
-						$locations = json_decode(file_get_contents('lib/data/markers.json'));
+						$locations = json_decode(file_get_contents('http://www.millersville.edu/lib/data/json/mu_campusmap_locations.json'));
 						$acadLocHTML = $adminLocHTML = $dormLocHTML = $otherLocHTML = '';
 						foreach ($locations as $name => $l) {
 							if ($l->isDepartment == false) {
@@ -152,7 +152,7 @@
 			</div>
 			<div id="link" class="tabs-content"></div>
 			<div id="footer">
-				<p><a href="#"><i class="icon-download-alt"></i> Download PDF map</a>
+				<p><a href="files/CampusMap.pdf"><i class="icon-download-alt"></i> Download PDF map</a>
 				<p id="afs"><a href="http://www.millersville.edu">Millersville University</a>. All Rights Reserved.<br />A member of the Pennsylvania State System of Higher Education. &copy; <?=date('Y');?></p>
 			</div>
 
@@ -221,7 +221,7 @@
 <script src="lib/js/backbone.0.5.3-min.js"></script>
 
 <script src="//maps.google.com/maps/api/js?sensor=true" type="text/javascript"></script>
-<script src="lib/js/app.js?v=1.4.1"></script>
+<script src="lib/js/app.min.js?v=1.5"></script>
 
 <script src="lib/js/jquery.joyride.1.0.2-min.js"></script> 
 <script type="text/javascript">
