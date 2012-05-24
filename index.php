@@ -43,7 +43,7 @@
 					</fieldset>
 					<fieldset id="locsearch"> 
 						<?php			
-						$locations = json_decode(file_get_contents('http://www.millersville.edu/lib/data/json/mu_campusmap_locations.json'));
+						$locations = json_decode(file_get_contents('lib/data/json/mu_campusmap_locations.json'));
 						$acadLocHTML = $adminLocHTML = $dormLocHTML = $otherLocHTML = '';
 						foreach ($locations as $name => $l) {
 							if ($l->isDepartment == false) {
@@ -99,52 +99,52 @@
 				 		<li class="filter-heading">Buildings</li>
 				 		
 						<li><label for="baseLayer" class="checkbox">
-							<input type="checkbox" name="baseLayer" class="filter-checkbox" id="baseLayer" checked="checked" value="http://www.millersville.edu/dev/directions/data/markers.kml" />
+							<input type="checkbox" name="baseLayer" class="filter-checkbox" id="baseLayer" checked="checked" value="http://www.millersville.edu/directions/data/markers.kml" />
 								All Buildings</label></li>
 				
 						<li><label for="academicsLayer" class="checkbox">
-							<input type="checkbox" name="academicsLayer" class="filter-checkbox" id="academicsLayer" value="http://www.millersville.edu/dev/directions/data/academic-buildings.kml" />
+							<input type="checkbox" name="academicsLayer" class="filter-checkbox building-layer" id="academicsLayer" value="http://www.millersville.edu/directions/data/academic-buildings.kml" />
 								<span class="filter-icon filter-icon-academics"></span>Academic Buildings</label></li>
 				
 						<li><label for="administrativeLayer" class="checkbox">
-							<input type="checkbox" name="administrativeLayer" class="filter-checkbox" id="administrativeLayer" value="http://www.millersville.edu/dev/directions/data/administrative-buildings.kml" />
+							<input type="checkbox" name="administrativeLayer" class="filter-checkbox building-layer" id="administrativeLayer" value="http://www.millersville.edu/directions/data/administrative-buildings.kml" />
 								<span class="filter-icon filter-icon-administrative"></span>Administrative Buildings</label></li>
 						
 						<li><label for="dormLayer" class="checkbox">
-							<input type="checkbox" name="dormLayer" class="filter-checkbox" id="dormLayer" value="http://www.millersville.edu/dev/directions/data/dorm-buildings.kml" />
+							<input type="checkbox" name="dormLayer" class="filter-checkbox building-layer" id="dormLayer" value="http://www.millersville.edu/directions/data/dorm-buildings.kml" />
 								<span class="filter-icon filter-icon-housing"></span>Student Housing</label></li>
 						
 						<li class="filter-heading">Services</li>
 						
 						<li><label for="muathleticLayer" class="checkbox">
-							<input type="checkbox" name="muathleticLayer" class="filter-checkbox" id="muathleticLayer" value="http://www.millersville.edu/dev/directions/data/mu-athleticareas.kml" />
+							<input type="checkbox" name="muathleticLayer" class="filter-checkbox" id="muathleticLayer" value="http://www.millersville.edu/directions/data/mu-athleticareas.kml" />
 								<span class="filter-icon service-icon"><img src="http://www.millersville.edu/directions/img/icons/athleticarea.png" alt="" /></span>Athletics
 							</label></li>
 						
 						<li><label for="emergencycallboxesLayer" class="checkbox">
-							<input type="checkbox" name="emergencycallboxesLayer" class="filter-checkbox" id="emergencycallboxesLayer" value="http://www.millersville.edu/dev/directions/data/mu-emergencycallboxes.kml" />
+							<input type="checkbox" name="emergencycallboxesLayer" class="filter-checkbox" id="emergencycallboxesLayer" value="http://www.millersville.edu/directions/data/mu-emergencycallboxes.kml" />
 								<span class="filter-icon service-icon"><img src="http://www.millersville.edu/directions/img/icons/callbox.png" alt="" /></span>Emergency Callboxes
 							</label></li>
 						
 						<li><label for="muparkingLayer" class="checkbox">
-							<input type="checkbox" name="muparkingLayer" class="filter-checkbox" id="muparkingLayer" value="http://www.millersville.edu/dev/directions/data/mu-parkinglots.kml" />
+							<input type="checkbox" name="muparkingLayer" class="filter-checkbox" id="muparkingLayer" value="http://www.millersville.edu/directions/data/mu-parkinglots.kml" />
 								<span class="filter-icon service-icon"><img src="http://www.millersville.edu/directions/img/icons/parkinglot.png" alt="" /></span>Parking Lots
 							</label></li>
 						
 						<li class="filter-heading">Shuttle Routes</li>
 						
 						<li><label for="mushuttleLayer" class="checkbox">
-							<input type="checkbox" name="mushuttleLayer" class="filter-checkbox" id="mushuttleLayer" value="http://www.millersville.edu/dev/directions/data/mu-shuttlebus.kml" />
+							<input type="checkbox" name="mushuttleLayer" class="filter-checkbox" id="mushuttleLayer" value="http://www.millersville.edu/directions/data/mu-shuttlebus.kml" />
 								<span class="filter-icon route-icon"><img src="http://chart.apis.google.com/chart?chs=12x12&cht=ls&chco=FF69BB&chd=s:A9&chls=2" alt="" /></span>MU Campus Shuttle
 							</label></li>
 							
 						<li><label for="route16" class="checkbox">
-							<input type="checkbox" name="route16" class="filter-checkbox" id="route16" value="http://www.millersville.edu/dev/directions/data/route-16.kml" />
+							<input type="checkbox" name="route16" class="filter-checkbox" id="route16" value="http://www.millersville.edu/directions/data/route-16.kml" />
 								<span class="filter-icon route-icon"><img src="http://chart.apis.google.com/chart?chs=12x12&cht=ls&chco=ff694e&chd=s:A9&chls=2" alt="" /></span>MU-Lancaster Route 16
 							</label></li>
 							
 						<li><label for="parkcity" class="checkbox">
-							<input type="checkbox" name="parkcity" class="filter-checkbox" id="parkcity" value="http://www.millersville.edu/dev/directions/data/park-city-xpress.kml" />
+							<input type="checkbox" name="parkcity" class="filter-checkbox" id="parkcity" value="http://www.millersville.edu/directions/data/park-city-xpress.kml" />
 								<span class="filter-icon route-icon"><img src="http://chart.apis.google.com/chart?chs=12x12&cht=ls&chco=5577bb&chd=s:A9&chls=2" alt="" /></span>MU Park City Xpress
 							</label></li>
 					</ul>
@@ -180,6 +180,8 @@
 	</li>
 </ol>
 
+<div id="modalContain" />
+
 <script type="text/template" id="search-results-stats">
 	<div id="map-results-feedback">
 		<p>Showing <strong><%= lowerBound == 0 ? 1 : lowerBound+1 %> - <%= upperBound <= resultCount ? upperBound : resultCount %></strong> of <strong><%= resultCount %></strong><% print(query !== '' ? ' for <em>'+query+'</em>' : ''); %>.</p>
@@ -208,31 +210,57 @@
 		<div class="map-infowindow">
 			<%= marker.image != '' ? "<img src=\"" + marker.image + "\" align=\"right\" alt=\"Picture of " + (marker.isDepartment ? marker.buildingName : marker.name) + "\" />" : "" %>
 			<address><%= marker.isDepartment ? marker.buildingName + "<br/>" : "" %><%= marker.address %><br/>Millersville, PA 17551</address>
+			<%= marker.phone != '' ? "<p>Ph: " + marker.phone + "</p>" : "" %>
 			<p>
-				<a href="<%= marker.directionsUrl %>" target="_blank">Get directions</a> 
-				<%= marker.isDepartment ? " | <a href=\"" + marker.website + "\" target=\"_blank\">Visit website</a>" : "" %>
+				<a href="<%= marker.directionsUrl %>" target="_blank">Get directions</a> | <a href="#markerModal" data-toggle="modal" class="modal-toggler-<%= marker.id %>">View more</a>
 			</p>
 		</div>
 	</div>
 </script>
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/template" id="marker-modal-content">
+	<div class="modal" id="markerModal">
+		<div class="modal-header">
+			<a class="close" data-dismiss="modal">&times;</a>
+			<h3><%= marker.name %></h3>			 
+		</div>
+		<div class="modal-body">			
+			<div class="span4">
+				<%= marker.description != "" ? "<p>" + marker.description + "</p>" : "" %>
+				<%= marker.isDepartment ? "<p><a href=\"" + marker.website + "\" target=\"_blank\" class=\"btn\">Visit website</a></p>" : "" %>
+			</div>
+			
+			<div class="span2">
+				<%= marker.image != '' ? "<img src=\"" + marker.image + "\" class=\"thumbnail\" style=\"margin-bottom:10px\" alt=\"Picture of " + (marker.isDepartment ? marker.buildingName : marker.name) + "\" />" : "" %>
+
+				<%= marker.phone != '' ? "<p><strong>Ph:</strong> " + marker.phone + "</p>" : "" %>			
+				
+				<address><%= marker.isDepartment ? marker.buildingName + "<br/>" : "" %><%= marker.address %><br/>Millersville, PA 17551</address>
+				
+				<p><a href="<%= marker.directionsUrl %>" target="_blank" class="btn">Get directions</a></p>
+			</div>
+		</div>
+	</div>
+</script>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 <script src="lib/js/underscore.1.3.1-min.js"></script>
 <script src="lib/js/backbone.0.5.3-min.js"></script>
 
 <script src="//maps.google.com/maps/api/js?sensor=true" type="text/javascript"></script>
-<script src="lib/js/app.min.js?v=1.5"></script>
+<script src="lib/js/app.js?v=1.5"></script>
 
 <script src="lib/js/jquery.joyride.1.0.2-min.js"></script> 
+<script src="lib/js/bootstrap.modal.min.js"></script> 
 <script type="text/javascript">
 	$(document).load(function() {
 		$(this).joyride({
 			'cookieMonster': true,
 			'cookieName': 'mucampusmaptour',
 			'cookieDomain': false
-		});
+		});		
 	}).ready(function(){
-		var App = new AppView;
+		window.App = new AppView;
 		
 		App.resizeUI();
 		$(window).resize(App.resizeUI);
